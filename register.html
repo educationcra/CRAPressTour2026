@@ -11,46 +11,78 @@
   <link href="https://cdn.jsdelivr.net/npm/@flaticon/flaticon-uicons@3.3.1/css/all/all.min.css" rel="stylesheet">
   
   <style>
-    body { font-family: 'Noto Sans Thai', sans-serif; overflow-x: hidden; background-color: #f8fafc; }
+    :root { 
+      --bg: #f8fafc; 
+      --card: #ffffff; 
+      --text: #0f172a; 
+      --primary: #1d4ed8; 
+      --orange: #f97316; 
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    body { 
+      margin: 0;
+      font-family: 'Noto Sans Thai', sans-serif; 
+      overflow-x: hidden; 
+      background: #f1f5f9;
+      background-image: 
+        radial-gradient(at 0% 0%, hsla(217,100%,94%,0.8) 0, transparent 40%), 
+        radial-gradient(at 100% 100%, hsla(28,100%,94%,0.8) 0, transparent 40%);
+      color: var(--text);
+    }
     
+    /* Background Focus Blur */
+    .hero-blur { position: fixed; border-radius: 999px; filter: blur(120px); opacity: 0.6; pointer-events: none; z-index: 0; }
+    .blur-a { width: 500px; height: 500px; background: #93c5fd; top: -100px; left: -100px; }
+    .blur-b { width: 500px; height: 500px; background: #fed7aa; right: -100px; bottom: -100px; }
+
+    /* Layout Cards */
+    .main-card {
+      width: 100%; 
+      max-width: 1200px; 
+      background: var(--card); 
+      border: 1px solid rgba(255, 255, 255, 0.9); 
+      border-radius: 32px; 
+      overflow: hidden;
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0,0,0,0.02);
+    }
+    
+    .left-panel {
+      background: linear-gradient(135deg, #ffffff 0%, #f4f8ff 100%);
+      position: relative;
+    }
+
     /* Animation Steps */
     .step-section { display: none; opacity: 0; transform: translateX(0); }
     .step-section.visible { display: block; }
-    @keyframes stepInRight { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
-    @keyframes stepInLeft { from { opacity: 0; transform: translateX(-40px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes stepInRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes stepInLeft { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
     .ani-next { animation: stepInRight 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     .ani-prev { animation: stepInLeft 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     
     /* Inputs */
     .input-wrapper { margin-bottom: 1.5rem; position: relative; }
-    .input-label { display: block; font-size: 0.875rem; font-weight: 700; color: #1e293b; margin-bottom: 0.5rem; }
+    .input-label { display: block; font-size: 0.875rem; font-weight: 700; color: #334155; margin-bottom: 0.5rem; }
     .req { color: #ef4444; margin-left: 2px; }
-    .input-field { 
+    
+    .input-field, .c-select-trigger { 
         width: 100%; padding: 1.125rem 1.25rem; border-radius: 1rem; 
-        border: 2px solid transparent; background: #ffffff; 
+        border: 1px solid #e2e8f0; background: #f8fafc; 
         outline: none; transition: all 0.3s ease; 
-        font-weight: 600; color: #0f172a; font-size: 0.95rem; 
-        box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+        font-weight: 600; font-size: 0.95rem; color: #0f172a;
     }
-    .input-field:focus { 
-        border-color: #2563eb; 
-        box-shadow: 0 4px 20px rgba(37, 99, 235, 0.08); 
+    .input-field::placeholder { color: #94a3b8; font-weight: 500; }
+    .input-field:focus, .c-select-trigger:focus, .c-select-container.open .c-select-trigger { 
+        background: #ffffff; border-color: #3b82f6; 
+        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); 
     }
 
     /* Custom Select */
     .c-select-container { position: relative; width: 100%; user-select: none; }
-    .c-select-trigger { 
-        width: 100%; padding: 1.125rem 1.25rem; border-radius: 1rem; 
-        border: 2px solid transparent; background: #ffffff; 
-        display: flex; justify-content: space-between; align-items: center; 
-        cursor: pointer; transition: all 0.3s ease; 
-        font-weight: 600; color: #94a3b8; font-size: 0.95rem; 
-        box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-    }
+    .c-select-trigger { display: flex; justify-content: space-between; align-items: center; cursor: pointer; color: #94a3b8; }
     .c-select-trigger.has-value { color: #0f172a; font-weight: 700; }
-    .c-select-trigger:focus, .c-select-container.open .c-select-trigger { 
-        border-color: #2563eb; box-shadow: 0 4px 20px rgba(37, 99, 235, 0.08); 
-    }
+    
     .c-select-dropdown { 
         position: absolute; top: calc(100% + 8px); left: 0; width: 100%; 
         background: #fff; border: 1px solid #e2e8f0; border-radius: 1rem; 
@@ -64,18 +96,18 @@
     .c-select-option:hover { background: #f8fafc; color: #2563eb; padding-left: 1.5rem; }
     .c-select-option.selected { background: #eff6ff; color: #1d4ed8; font-weight: 700; border-left: 4px solid #2563eb; padding-left: 1rem;}
     
-    /* Autocomplete (Fixed z-index to be on top of everything) */
+    /* Autocomplete */
     .autocomplete-dropdown { 
         position: absolute; z-index: 9999; width: 100%; background: #fff; 
         border: 1px solid #e2e8f0; border-radius: 1rem; max-height: 250px; 
-        overflow-y: auto; display: none; box-shadow: 0 20px 50px -10px rgba(0,0,0,0.2); margin-top: 8px; 
+        overflow-y: auto; display: none; box-shadow: 0 20px 50px -10px rgba(0,0,0,0.1); margin-top: 8px; 
     }
     .autocomplete-dropdown li { padding: 1rem 1.25rem; border-bottom: 1px solid #f8fafc; cursor: pointer; transition: 0.2s; font-size: 0.95rem; color: #475569; font-weight: 500; }
-    .autocomplete-dropdown li:hover { background-color: #f8fafc; color: #2563eb; padding-left: 1.5rem; }
+    .autocomplete-dropdown li:hover { background-color: #eff6ff; color: #1d4ed8; padding-left: 1.5rem; }
 
     /* Custom Checkbox */
-    .custom-checkbox { display: flex; align-items: flex-start; gap: 1rem; cursor: pointer; padding: 1rem 1.25rem; border-radius: 1rem; transition: 0.2s; background: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.02); border: 2px solid transparent; }
-    .custom-checkbox:hover { border-color: #e2e8f0; }
+    .custom-checkbox { display: flex; align-items: flex-start; gap: 1rem; cursor: pointer; padding: 1rem 1.25rem; border-radius: 1rem; transition: 0.2s; background: #f8fafc; border: 1px solid #e2e8f0; }
+    .custom-checkbox:hover { border-color: #cbd5e1; background: #f1f5f9; }
     .custom-checkbox input { appearance: none; width: 1.4rem; height: 1.4rem; border: 2px solid #cbd5e1; border-radius: 0.4rem; outline: none; transition: 0.2s; position: relative; flex-shrink: 0; cursor: pointer; background: #fff; margin-top: 0.1rem; }
     .custom-checkbox input:checked { background: #2563eb; border-color: #2563eb; }
     .custom-checkbox input:checked::after { content: '\2714'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 0.85rem; font-weight: bold; }
@@ -91,177 +123,101 @@
     .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 15px 30px -8px rgba(37, 99, 235, 0.6); }
     .btn-primary:active { transform: translateY(1px); }
 
-    /* Background Focus Blur */
-    .hero-blur { position: fixed; border-radius: 999px; filter: blur(120px); opacity: 0.3; pointer-events: none; z-index: 0; }
-    .blur-a { width: 500px; height: 500px; background: #93c5fd; top: -100px; left: -100px; }
-    .blur-b { width: 500px; height: 500px; background: #fed7aa; bottom: -100px; right: -100px; }
+    .swal2-radio { display: flex !important; flex-direction: column !important; align-items: flex-start !important; gap: 12px; padding: 10px 20px; }
+    .swal2-radio label { margin: 0 !important; width: 100%; text-align: left; cursor: pointer; }
+    .swal2-radio input[type="radio"] { margin-right: 12px !important; }
 
-    /* ปรับแต่ง Radio แบบใหม่ใน SweetAlert2 */
-    .swal2-radio {
-      display: flex !important;
-      flex-direction: column !important;
-      align-items: flex-start !important;
-      gap: 12px;
-      padding: 10px 20px;
-    }
-    .swal2-radio label {
-      margin: 0 !important;
-      width: 100%;
-      text-align: left;
-      cursor: pointer;
-    }
-    .swal2-radio input[type="radio"] {
-      margin-right: 12px !important;
-    }
-
-    /* CSS สำหรับ Grade Cards ใน SweetAlert2 */
-    .grade-card-container {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-        margin-top: 1.5rem;
-    }
-    
-    @media (min-width: 640px) {
-        .grade-card-container {
-            flex-direction: row;
-        }
-    }
-
-    .grade-card {
-        flex: 1;
-        border: 2px solid #e2e8f0;
-        border-radius: 1rem;
-        padding: 1.5rem 1rem;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        background-color: #ffffff;
-    }
-
-    .grade-card:hover {
-        border-color: #93c5fd;
-        background-color: #eff6ff;
-        transform: translateY(-2px);
-    }
-
-    .grade-card.selected {
-        border-color: #2563eb;
-        background-color: #eff6ff;
-        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.15);
-    }
-
-    .grade-icon {
-        width: 3rem;
-        height: 3rem;
-        margin-bottom: 1rem;
-        color: #64748b;
-        transition: color 0.2s ease;
-    }
-
-    .grade-card:hover .grade-icon {
-        color: #3b82f6;
-    }
-
-    .grade-card.selected .grade-icon {
-        color: #2563eb;
-    }
-
-    .grade-title {
-        font-weight: 700;
-        font-size: 1rem;
-        color: #334155;
-    }
-
-    .grade-card.selected .grade-title {
-        color: #1d4ed8;
-    }
+    .grade-card-container { display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem; }
+    @media (min-width: 640px) { .grade-card-container { flex-direction: row; } }
+    .grade-card { flex: 1; border: 2px solid #e2e8f0; border-radius: 1rem; padding: 1.5rem 1rem; cursor: pointer; transition: all 0.2s ease; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; background-color: #ffffff; }
+    .grade-card:hover { border-color: #93c5fd; background-color: #eff6ff; transform: translateY(-2px); }
+    .grade-card.selected { border-color: #2563eb; background-color: #eff6ff; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.15); }
+    .grade-icon { width: 3rem; height: 3rem; margin-bottom: 1rem; color: #64748b; transition: color 0.2s ease; }
+    .grade-card:hover .grade-icon { color: #3b82f6; }
+    .grade-card.selected .grade-icon { color: #2563eb; }
+    .grade-title { font-weight: 700; font-size: 1rem; color: #334155; }
+    .grade-card.selected .grade-title { color: #1d4ed8; }
   </style>
 </head>
-<body class="min-h-screen relative text-slate-800">
+<body class="min-h-screen relative text-slate-800 flex items-center justify-center p-4 lg:p-8">
 
   <div class="hero-blur blur-a"></div>
   <div class="hero-blur blur-b"></div>
 
-  <!-- Layout หลัก -->
-  <div class="flex min-h-screen w-full relative z-10 bg-white lg:bg-transparent">
+  <!-- Main Card Layout -->
+  <div class="main-card flex flex-col lg:flex-row relative z-10 w-full">
     
-    <!-- Left Panel (Visual) -->
-    <div class="hidden lg:flex lg:w-5/12 xl:w-1/2 bg-white flex-col items-center justify-center border-r border-slate-100 p-12 relative overflow-hidden">
-        <div class="w-full max-w-[550px] h-full flex flex-col justify-between py-10 relative z-10">
-            <div>
-                <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-xs font-black tracking-widest uppercase mb-10 text-blue-600">
-                    <i class="fi fi-sr-edit"></i> Registration Portal
-                </span>
-                
-                <img src="https://s.imgz.io/2026/08/05/0.1f7cac65cbeebea61.png" alt="CRA Press Tour 2026" class="w-full max-w-[250px] xl:max-w-[320px] h-auto mb-10 object-contain drop-shadow-sm">
-                
-                <h1 class="text-4xl xl:text-5xl font-black leading-[1.15] tracking-tight mb-6 text-slate-900">
-                    CRA Education <br>
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-700 to-blue-400">Press Tour 2026</span>
-                </h1>
-                
-                <div class="border-l-4 border-orange-500 pl-4 py-1 mb-8">
-                  <p class="text-slate-600 font-medium leading-relaxed text-lg">
-                    "พลิกโฉมวิศวกรชีวการแพทย์<br>สู่ความเป็นเลิศเพื่อทุกชีวิต"
-                  </p>
-                </div>
+    <!-- Left Panel (Visual Cover) -->
+    <div class="left-panel lg:w-5/12 border-b lg:border-b-0 lg:border-r border-slate-100 flex flex-col justify-center items-center p-8 md:p-12">
+        <div class="w-full max-w-[400px] flex flex-col">
+            
+            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-xs font-black tracking-widest uppercase mb-8 text-blue-600 w-fit">
+                <i class="fi fi-sr-edit"></i> Registration Portal
+            </span>
+            
+            <img src="https://s.imgz.io/2026/08/05/0.1f7cac65cbeebea61.png" alt="CRA Press Tour 2026" class="w-full max-w-[320px] h-auto mb-8 object-contain drop-shadow-sm">
+            
+            <h1 class="text-3xl xl:text-4xl font-black leading-[1.15] tracking-tight mb-5 text-slate-900">
+                CRA Education <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-700 to-blue-400">Press Tour 2026</span>
+            </h1>
+            
+            <div class="border-l-4 border-orange-500 pl-4 py-1 mb-8">
+              <p class="text-slate-600 font-medium leading-relaxed">
+                "พลิกโฉมวิศวกรชีวการแพทย์<br>สู่ความเป็นเลิศเพื่อทุกชีวิต"
+              </p>
             </div>
             
-            <div class="mt-auto flex flex-col gap-3">
-                <div class="flex items-center gap-4 bg-slate-50 p-4 rounded-[1.25rem] border border-slate-100 shadow-sm w-fit">
-                    <div class="w-11 h-11 rounded-xl bg-white shadow-sm flex-shrink-0 flex items-center justify-center text-blue-600">
-                        <i class="fi fi-sr-calendar-star text-xl mt-1"></i>
+            <div class="flex flex-col gap-3">
+                <div class="flex items-center gap-3 bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+                    <div class="w-10 h-10 rounded-xl bg-blue-50 flex-shrink-0 flex items-center justify-center text-blue-600">
+                        <i class="fi fi-sr-calendar-star text-lg mt-1"></i>
                     </div>
                     <div>
                         <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-0.5">วันที่จัดกิจกรรม</p>
-                        <p class="text-[15px] font-black text-slate-800">28 สิงหาคม 2569</p>
+                        <p class="text-[14px] font-black text-slate-800">28 สิงหาคม 2569</p>
                     </div>
                 </div>
                 
-                <div class="flex items-center gap-4 bg-slate-50 p-4 rounded-[1.25rem] border border-slate-100 shadow-sm w-fit max-w-[420px]">
-                    <div class="w-11 h-11 rounded-xl bg-white shadow-sm flex-shrink-0 flex items-center justify-center text-orange-500">
-                        <i class="fi fi-sr-marker text-xl mt-1"></i>
+                <div class="flex items-center gap-3 bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+                    <div class="w-10 h-10 rounded-xl bg-orange-50 flex-shrink-0 flex items-center justify-center text-orange-500">
+                        <i class="fi fi-sr-marker text-lg mt-1"></i>
                     </div>
                     <div>
                         <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-0.5">สถานที่</p>
-                        <p class="text-[14px] font-bold text-slate-800 leading-snug">อาคารวิจัยและการเรียนรู้ เฉลิมพระเกียติ 60 พรรษา</br>เจ้าฟ้าจุฬาภรณ์</p>
+                        <p class="text-[13px] font-bold text-slate-800 leading-snug">อาคารวิจัยและการเรียนรู้<br>เฉลิมพระเกียรติฯ 60 พรรษา</p>
                     </div>
                 </div>
             </div>
+            
         </div>
     </div>
 
     <!-- Right Panel (Form) -->
-    <div class="w-full lg:w-7/12 xl:w-1/2 flex flex-col relative items-center justify-center bg-[#f8fafc]/80 backdrop-blur-sm lg:bg-transparent">
+    <div class="lg:w-7/12 flex flex-col relative items-center bg-white p-6 py-10 md:p-12 overflow-y-auto">
         
-        <!-- ขอบเขตของ Form (จัด Alignment กลางเสมอ ไม่ไหล) -->
-        <div class="w-full max-w-[620px] px-6 py-12 sm:px-10 flex flex-col min-h-screen justify-center relative z-10">
+        <div class="w-full max-w-[550px] flex flex-col justify-center h-full">
             
-            <!-- ปุ่มกลับหน้าหลัก ให้อยู่ใน Container เดียวกับ Form -->
+            <!-- Navigation Back & Mobile Logo -->
             <div class="flex justify-between items-center mb-10 w-full">
-               <a href="index.html" class="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-blue-600 font-bold transition-colors no-underline bg-white px-5 py-2.5 rounded-full border border-slate-200 shadow-sm">
+               <a href="index.html" class="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-blue-600 font-bold transition-colors no-underline px-4 py-2 rounded-full border border-slate-200 bg-slate-50 hover:bg-blue-50 hover:border-blue-200">
                  <i class="fi fi-sr-arrow-small-left mt-0.5 text-lg"></i> กลับหน้าหลัก
                </a>
-               <img src="https://s.imgz.io/2026/08/05/0.1f7cac65cbeebea61.png" alt="CRA Logo" class="h-20 sm:h-24 lg:hidden object-contain drop-shadow-sm">
             </div>
 
             <!-- Progress Bar -->
-            <div class="w-full bg-slate-200 h-1.5 rounded-full mb-10 relative overflow-hidden" id="progressContainer">
+            <div class="w-full bg-slate-100 h-1.5 rounded-full mb-8 relative overflow-hidden" id="progressContainer">
                 <div id="progressBar" class="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-500 to-blue-400 transition-all duration-500 ease-out w-1/3"></div>
             </div>
 
+            <!-- The Form -->
             <form id="regForm" class="w-full">
                 <!-- เก็บค่าระดับชั้นที่ได้จาก Popup -->
                 <input type="hidden" id="grade" value="">
                 
                 <div id="step1" class="step-section active visible ani-next">
                   <div class="mb-8">
-                      <h2 class="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">ข้อมูลส่วนตัว</h2>
+                      <h2 class="text-3xl font-black text-slate-900 tracking-tight">ข้อมูลส่วนตัว</h2>
                       <p class="text-slate-500 font-medium mt-2">กรุณากรอกข้อมูลให้ครบถ้วนเพื่อความสะดวกในการเข้าร่วมงาน</p>
                   </div>
                   
@@ -302,14 +258,14 @@
                     <input type="tel" id="phone" class="input-field tracking-widest text-lg" maxlength="12" placeholder="0XX-XXX-XXXX" oninput="formatPhone(this)">
                   </div>
 
-                  <div class="mt-10">
+                  <div class="mt-8">
                     <button type="button" onclick="nextStep(2)" class="w-full btn-primary py-4 rounded-2xl font-black text-[1.05rem] flex items-center justify-center gap-2">ดำเนินการต่อ <i class="fi fi-sr-arrow-right mt-1 text-lg"></i></button>
                   </div>
                 </div>
 
                 <div id="step2" class="step-section">
                   <div class="mb-8">
-                      <h2 class="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">ข้อมูลการศึกษา</h2>
+                      <h2 class="text-3xl font-black text-slate-900 tracking-tight">ข้อมูลการศึกษา</h2>
                       <p class="text-slate-500 font-medium mt-2">ระบุสถานศึกษาปัจจุบันของท่าน</p>
                   </div>
                   
@@ -329,15 +285,15 @@
                     <input type="hidden" id="province">
                   </div>
 
-                  <div class="flex gap-4 mt-10">
-                    <button type="button" onclick="prevStep(1)" class="w-1/3 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 py-4 rounded-2xl font-bold text-[1rem] transition-all shadow-sm">กลับ</button>
+                  <div class="flex gap-4 mt-8">
+                    <button type="button" onclick="prevStep(1)" class="w-1/3 bg-slate-50 border border-slate-200 text-slate-600 hover:bg-slate-100 py-4 rounded-2xl font-bold text-[1rem] transition-all">กลับ</button>
                     <button type="button" onclick="nextStep(3)" class="w-2/3 btn-primary py-4 rounded-2xl font-black text-[1.05rem] flex items-center justify-center gap-2">ดำเนินการต่อ <i class="fi fi-sr-arrow-right mt-1 text-lg"></i></button>
                   </div>
                 </div>
 
                 <div id="step3" class="step-section">
                   <div class="mb-8">
-                      <h2 class="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">แบบสำรวจ</h2>
+                      <h2 class="text-3xl font-black text-slate-900 tracking-tight">แบบสำรวจ</h2>
                       <p class="text-slate-500 font-medium mt-2">เพื่อการพัฒนาและปรับปรุงรูปแบบการจัดงานในอนาคต</p>
                   </div>
                   
@@ -359,7 +315,7 @@
                     </div>
                     <input type="hidden" id="followPage">
 
-                    <div id="wrapPlatform" class="hidden mt-6 pt-6 border-t border-slate-200">
+                    <div id="wrapPlatform" class="hidden mt-6 pt-6 border-t border-slate-100">
                       <label class="input-label text-orange-500">ติดตามเพจผ่านแพลตฟอร์มใดเป็นหลัก<span class="req">*</span></label>
                       <div class="c-select-container" id="c-followPlatform">
                           <div class="c-select-trigger" tabindex="0"><span>-- เลือกแพลตฟอร์ม --</span> <i class="fi fi-sr-angle-small-down"></i></div>
@@ -374,8 +330,8 @@
                     </div>
                   </div>
 
-                  <div class="flex gap-4 mt-10">
-                    <button type="button" onclick="prevStep(2)" class="w-1/3 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 py-4 rounded-2xl font-bold text-[1rem] transition-all shadow-sm">กลับ</button>
+                  <div class="flex gap-4 mt-8">
+                    <button type="button" onclick="prevStep(2)" class="w-1/3 bg-slate-50 border border-slate-200 text-slate-600 hover:bg-slate-100 py-4 rounded-2xl font-bold text-[1rem] transition-all">กลับ</button>
                     <button type="button" id="submitBtn" onclick="submitFinal()" class="w-2/3 btn-primary py-4 rounded-2xl font-black text-[1.05rem] flex items-center justify-center gap-2">
                         ยืนยันลงทะเบียน <i class="fi fi-sr-check-circle mt-1 text-lg"></i>
                     </button>
@@ -396,7 +352,7 @@
                     <div class="text-5xl sm:text-6xl font-black tracking-wider text-white drop-shadow-md" id="displayId">PT-000</div>
                 </div>
 
-                <a href="index.html" class="inline-flex w-full justify-center items-center gap-2 bg-white border border-slate-200 text-slate-700 py-4 rounded-2xl font-black hover:bg-slate-50 transition-all shadow-sm no-underline text-[1rem]">
+                <a href="index.html" class="inline-flex w-full justify-center items-center gap-2 bg-slate-50 border border-slate-200 text-slate-700 py-4 rounded-2xl font-black hover:bg-slate-100 transition-all shadow-sm no-underline text-[1rem]">
                     กลับหน้าหลัก
                 </a>
             </div>
@@ -440,13 +396,12 @@
                     window.location.href = 'index.html';
                 });
             } else {
-                // หากที่นั่งยังไม่เต็ม ให้เรียก Popup ควบคุมการเลือกระดับชั้นขึ้นมาถามทันที
+                // หากที่นั่งยังไม่เต็ม ให้เรียก Popup ถามคุณสมบัติทันที
                 askGradePopup();
             }
         })
         .catch(error => {
             console.error('Error checking seats:', error);
-            // กรณีระบบเช็คที่นั่งขัดข้อง ให้แสดง Popup ใช้งานต่อไปตามปกติ
             askGradePopup();
         });
 
@@ -463,18 +418,6 @@
       sources.forEach((s) => {
         group.innerHTML += `<label class="custom-checkbox group"><input type="checkbox" name="src" value="${s}"><span>${s}</span></label>`;
       });
-      
-      group.innerHTML += `
-        <div class="flex flex-col w-full">
-          <label class="custom-checkbox group">
-            <input type="checkbox" id="chkOtherSource" onchange="toggleOtherSource()">
-            <span>อื่นๆ (โปรดระบุ)</span>
-          </label>
-          <div id="wrapOtherSource" class="hidden pl-[3.25rem] pr-2 pb-2 mt-1 transition-all">
-             <input type="text" id="otherSourceInput" class="input-field !py-2.5 !text-[15px]" placeholder="พิมพ์ระบุช่องทาง...">
-          </div>
-        </div>
-      `;
 
       setupCustomSelects();
 
@@ -495,15 +438,16 @@
             title: 'คุณคือนักเรียนระดับมัธยมศึกษาตอนปลาย ใช่หรือไม่?',
             icon: 'question',
             showCancelButton: true,
+            showCloseButton: true,
             confirmButtonText: 'ใช่',
             cancelButtonText: 'ไม่ใช่',
             confirmButtonColor: '#2563eb',
             cancelButtonColor: '#94a3b8',
             allowOutsideClick: false,
-            allowEscapeKey: false
+            allowEscapeKey: true
         }).then((result) => {
             if (result.isConfirmed) {
-                // สร้าง HTML สำหรับการ์ด
+                // สร้าง HTML สำหรับการ์ดเลือกระดับชั้น
                 const cardsHtml = `
                     <div class="grade-card-container" id="gradeSelectionContainer">
                         <div class="grade-card" data-value="มัธยมศึกษาปีที่ 4" onclick="selectGradeCard(this)">
@@ -532,13 +476,28 @@
                 Swal.fire({
                     title: 'โปรดเลือกระดับชั้นของคุณ',
                     html: cardsHtml,
-                    showConfirmButton: false, // ซ่อนปุ่ม Confirm เพราะเราจะให้คลิกที่การ์ดแล้วผ่านเลย
+                    showConfirmButton: false, // ซ่อนปุ่ม Confirm
+                    showCloseButton: true,
                     allowOutsideClick: false,
-                    allowEscapeKey: false,
+                    allowEscapeKey: true,
                     width: '600px' // ขยายขนาด popup ให้กว้างพอสำหรับการ์ด 3 ใบ
+                }).then((res) => {
+                    if(res.isDismissed) {
+                        window.location.href = 'index.html';
+                    }
                 });
             } else {
-                document.getElementById('grade').value = 'ไม่ใช่ระดับมัธยมศึกษาตอนปลาย';
+                // เตะกลับหน้าหลัก ทันทีหากตอบไม่ใช่ หรือกดกากบาท
+                Swal.fire({
+                    title: 'ขออภัย',
+                    text: 'คุณไม่มีคุณสมบัติในการเข้าร่วมครั้งนี้ ขอบคุณที่สนใจค่ะ',
+                    icon: 'error',
+                    confirmButtonColor: '#2563eb',
+                    confirmButtonText: 'กลับหน้าหลัก',
+                    allowOutsideClick: false
+                }).then(() => {
+                    window.location.href = 'index.html';
+                });
             }
         });
     }
@@ -560,18 +519,6 @@
             document.getElementById('grade').value = selectedValue;
             Swal.close();
         }, 300);
-    }
-
-    function toggleOtherSource() {
-      const wrap = document.getElementById('wrapOtherSource');
-      const inp = document.getElementById('otherSourceInput');
-      if(document.getElementById('chkOtherSource').checked) {
-        wrap.classList.remove('hidden');
-        inp.focus();
-      } else {
-        wrap.classList.add('hidden');
-        inp.value = '';
-      }
     }
 
     function setupCustomSelects() {
@@ -711,8 +658,8 @@
           }
       }
       if(s === 3) {
-          if(!document.getElementById('schoolSearch').value || !document.getElementById('province').value || !document.getElementById('grade').value) {
-              Swal.fire({icon: 'warning', title: 'ข้อมูลไม่ครบ', text: 'กรุณาระบุข้อมูลการศึกษาและระดับชั้นให้ครบถ้วน', confirmButtonColor: '#2563eb'}); return;
+          if(!document.getElementById('schoolSearch').value || !document.getElementById('province').value) {
+              Swal.fire({icon: 'warning', title: 'ข้อมูลไม่ครบ', text: 'กรุณาระบุข้อมูลการศึกษาให้ครบถ้วน', confirmButtonColor: '#2563eb'}); return;
           }
       }
       animateStepChange(s, 'ani-next');
@@ -724,16 +671,6 @@
       const srcNodes = document.querySelectorAll('input[name="src"]:checked');
       let selectedSources = Array.from(srcNodes).map(n => n.value);
       
-      const chkOther = document.getElementById('chkOtherSource');
-      const otherInput = document.getElementById('otherSourceInput').value.trim();
-      if(chkOther && chkOther.checked) {
-         if(!otherInput) {
-             Swal.fire({icon: 'warning', title: 'ข้อมูลไม่ครบ', text: 'กรุณาระบุช่องทางอื่นๆ ที่ท่านรับทราบข่าวสาร', confirmButtonColor: '#2563eb'}); 
-             return;
-         }
-         selectedSources.push("อื่นๆ: " + otherInput);
-      }
-
       const followPage = document.getElementById('followPage').value;
       const followPlatform = document.getElementById('followPlatform').value;
 
