@@ -200,7 +200,7 @@
                     </div>
                     <div>
                         <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-0.5">สถานที่</p>
-                        <p class="text-[13px] font-bold text-slate-800 leading-snug">อาคารวิจัยและการเรียนรู้<br>เฉลิมพระเกียรติฯ 60 พรรษา</p>
+                        <p class="text-[13px] font-bold text-slate-800 leading-snug">อาคารวิจัยและการเรียนรู้<br>เฉลิมพระเกียรติฯ 60 พรรษา เจ้าฟ้าจุฬาภรณ์</p>
                     </div>
                 </div>
             </div>
@@ -586,7 +586,7 @@
                     width: '650px' 
                 }).then((res) => {
                     // หากกดกากบาทปิดที่หน้านี้ ก็แปลว่าไม่ทำต่อ
-                    if(res.isDismissed) {
+                    if(res.dismiss === Swal.DismissReason.close) {
                         rejectUser('ยกเลิกการลงทะเบียน', 'คุณไม่มีคุณสมบัติในการเข้าร่วมครั้งนี้ ขอบคุณที่สนใจค่ะ');
                     }
                 });
