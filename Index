@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>CRA Education Press Tour 2026 - ลงทะเบียน</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts: Noto Sans Thai -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- Flaticon UIcons -->
+  <link href="https://cdn.jsdelivr.net/npm/@flaticon/flaticon-uicons@3.3.1/css/all/all.min.css" rel="stylesheet">
+  
+  <style>
+    :root { 
+      --bg: #f8fafc; 
+      --card: #ffffff; 
+      --text: #0f172a; 
+      --primary: #1d4ed8; 
+      --orange: #f97316; 
+    }
+    
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    
+    body {
+      margin: 0; 
+      font-family: 'Noto Sans Thai', sans-serif;
+      background: #f1f5f9;
+      background-image: 
+        radial-gradient(at 0% 0%, hsla(217,100%,94%,0.8) 0, transparent 40%), 
+        radial-gradient(at 100% 100%, hsla(28,100%,94%,0.8) 0, transparent 40%);
+      color: var(--text); 
+      overflow-x: hidden; 
+      min-height: 100vh; 
+      font-size: 0.95rem;
+    }
+
+    .hero-blur { position: absolute; border-radius: 999px; filter: blur(120px); opacity: 0.6; pointer-events: none; z-index: 0; }
+    .blur-a { width: 500px; height: 500px; background: #93c5fd; top: -100px; left: -100px; }
+    .blur-b { width: 500px; height: 500px; background: #fed7aa; right: -100px; bottom: -100px; }
+    
+    .main-card {
+      width: 100%; 
+      max-width: 1100px; 
+      background: var(--card); 
+      border: 1px solid rgba(255, 255, 255, 0.9); 
+      border-radius: 32px; 
+      overflow: hidden;
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0,0,0,0.02);
+    }
+    
+    .left-panel {
+      background: linear-gradient(135deg, #ffffff 0%, #f4f8ff 100%);
+      position: relative;
+      border-right: 1px solid #f1f5f9;
+      overflow: hidden;
+    }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 0.4rem; 
+      padding: 0.5rem 1rem; border-radius: 999px;
+      font-size: 0.8rem; font-weight: 700; letter-spacing: 0.02em;
+    }
+    .badge-blue { background: #eff6ff; color: #1d4ed8; border: 1px solid #dbeafe; }
+    .badge-orange { background: #fff7ed; color: #ea580c; border: 1px solid #ffedd5; }
+    
+    .btn-primary {
+      width: 100%; height: 64px; border: none; border-radius: 24px; 
+      background: linear-gradient(135deg, #2563eb, var(--primary));
+      color: white; font-weight: 800; font-size: 1.15rem; 
+      cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+      box-shadow: 0 12px 25px -8px rgba(37,99,235,0.5);
+    }
+    .btn-primary:hover { 
+      transform: translateY(-2px); 
+      box-shadow: 0 15px 30px -8px rgba(37,99,235,0.6); 
+    }
+    .btn-primary:active { transform: translateY(1px); }
+
+    .btn-disabled {
+      width: 100%; height: 64px; border: none; border-radius: 24px; 
+      background: #f1f5f9; color: #94a3b8; font-weight: 800; font-size: 1.15rem; 
+      cursor: not-allowed; border: 1px solid #e2e8f0;
+    }
+    
+    .pb-safe { padding-bottom: calc(env(safe-area-inset-bottom) + 0.5rem); }
+    .pt-safe { padding-top: calc(env(safe-area-inset-top) + 0.5rem); }
+    
+    /* iOS Style Bottom Nav */
+    .bottom-nav {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-top: 1px solid rgba(226, 232, 240, 0.8);
+    }
+
+    /* Modal Animation */
+    #scheduleModal {
+      transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    #scheduleModal.closed {
+      opacity: 0; pointer-events: none; transform: translateY(20px);
+    }
+    #scheduleModal.open {
+      opacity: 1; pointer-events: auto; transform: translateY(0);
+    }
+
+    @media(max-width:900px){ 
+      .main-grid { grid-template-columns: 1fr !important; } 
+      .left-panel { border-right: none; border-bottom: 1px solid #f1f5f9; } 
+      body { padding: 1rem 1rem 6rem 1rem !important; }
+    }
+  </style>
+</head>
+
+<body class="flex items-center justify-center p-6 lg:p-8 relative">
+
+<div class="hero-blur blur-a"></div>
+<div class="hero-blur blur-b"></div>
+
+<div class="main-card grid grid-cols-2 main-grid relative z-10">
+
+  <!-- Left Panel (Cover) -->
+  <div class="left-panel p-8 md:p-12 flex flex-col justify-between">
+    <div class="relative z-10">
+      
+      <div class="flex flex-wrap gap-2 mb-8">
+        <div class="badge badge-blue"><i class="fi fi-sr-users mt-0.5"></i> จำกัด 40 ที่นั่ง</div>
+        <div class="badge badge-orange"><i class="fi fi-sr-ticket mt-0.5"></i> ฟรี ไม่มีค่าใช้จ่าย</div>
+      </div>
+      
+      <img src="https://s.imgz.io/2026/08/05/0.1f7cac65cbeebea61.png" alt="CRA Education" class="w-full max-w-[220px] mb-8 object-contain">
+      
+      <p class="uppercase tracking-widest text-blue-600 text-[11px] font-black mb-3">เปิดบ้านต้อนรับสื่อมวลชน</p>
+      <h1 class="text-3xl md:text-4xl lg:text-[2.75rem] font-black text-slate-900 leading-[1.15] mb-6">
+        CRA Education<br>
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-700 to-blue-400">Press Tour 2026</span>
+      </h1>
+      
+      <div class="border-l-4 border-orange-500 pl-4 py-1 mb-8">
+        <h2 class="text-lg font-black text-slate-800 mb-1">CRA Engineer for Lives:</h2>
+        <p class="text-slate-600 font-medium leading-relaxed">
+          "พลิกโฉมวิศวกรชีวการแพทย์<br>สู่ความเป็นเลิศเพื่อทุกชีวิต"
+        </p>
+      </div>
+    </div>
+
+    <!-- Info Cards -->
+    <div class="relative z-10 grid md:grid-cols-2 gap-4 mt-4">
+      <div class="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm">
+        <div class="flex items-center gap-2 mb-2">
+          <i class="fi fi-sr-calendar text-blue-500 text-sm"></i>
+          <div class="text-slate-400 text-[10px] font-black uppercase tracking-widest">Date</div>
+        </div>
+        <div class="text-[1.1rem] font-black text-slate-800 leading-tight mb-0.5">28 สิงหาคม 2569</div>
+        <div class="text-slate-500 text-sm font-bold">08:00 - 12:00 น.</div>
+      </div>
+      
+      <div class="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm">
+        <div class="flex items-center gap-2 mb-2">
+          <i class="fi fi-sr-marker text-orange-500 text-sm"></i>
+          <div class="text-slate-400 text-[10px] font-black uppercase tracking-widest">Location</div>
+        </div>
+        <div class="font-bold text-slate-800 text-[0.9rem] leading-snug">อาคารวิจัยและการเรียนรู้ 60 พรรษา เฉลิมพระเกียรติฯ</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Panel (Registration & Progress) -->
+  <div class="p-8 md:p-12 flex flex-col justify-center bg-white relative">
+    <div class="max-w-md mx-auto w-full relative z-10">
+
+      <div class="mb-8 text-center md:text-left">
+        <div class="w-16 h-16 rounded-[20px] bg-orange-50 text-orange-500 flex items-center justify-center mb-6 mx-auto md:mx-0 shadow-sm border border-orange-100">
+          <i class="fi fi-sr-edit text-3xl mt-1"></i>
+        </div>
+        <h2 class="text-2xl lg:text-3xl font-black text-slate-900 tracking-tight mb-3">พร้อมหรือยัง?</h2>
+        <p class="text-slate-500 leading-relaxed font-medium">
+          ลงทะเบียนเข้าร่วมกิจกรรม CRA Education Press Tour 2026 เพื่อร่วมเปิดประสบการณ์ใหม่
+        </p>
+      </div>
+
+      <!-- Live Counter Box -->
+      <div class="mb-8 p-6 rounded-[24px] bg-slate-50 border border-slate-100 relative overflow-hidden">
+        <div class="flex justify-between items-end mb-4 relative z-10">
+          <div>
+            <div class="flex items-center gap-2 mb-2">
+              <div class="text-[11px] font-black text-slate-400 uppercase tracking-widest">ยอดลงทะเบียนแล้ว</div>
+              <div id="remainingBadge" class="px-2.5 py-1 rounded-lg bg-blue-100 text-blue-600 text-[11px] font-bold">กำลังตรวจสอบ...</div>
+            </div>
+            <div class="flex items-baseline gap-2">
+              <!-- Default value is now 0 instead of spinner/dash -->
+              <div class="text-5xl font-black text-slate-800 leading-none" id="seatCountText">0</div>
+              <div class="text-base font-bold text-slate-400 mb-1">/ 40 ที่นั่ง</div>
+            </div>
+          </div>
+        </div>
+        <div class="w-full h-3 bg-slate-200 rounded-full overflow-hidden relative z-10">
+          <div id="seatProgressBar" class="h-full w-0 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full transition-all duration-1000 ease-out"></div>
+        </div>
+      </div>
+
+      <div class="space-y-4">
+        <!-- Register Button -->
+        <a href="register.html" class="block no-underline" id="regLink">
+          <button id="regBtn" class="btn-primary flex justify-center items-center gap-3 group">
+            <i class="fi fi-sr-rocket-lunch mt-1 text-xl transition-transform group-hover:-translate-y-1 group-hover:translate-x-1"></i> 
+            ลงทะเบียนเข้าร่วมกิจกรรม
+          </button>
+        </a>
+
+        <!-- Desktop Schedule Button -->
+        <button id="desktopScheduleBtn" class="hidden md:flex w-full bg-white border border-slate-200 rounded-[24px] p-5 hover:border-blue-300 hover:shadow-md transition-all items-center justify-between group cursor-pointer">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:scale-105 transition-transform">
+              <i class="fi fi-sr-calendar-lines mt-1 text-xl"></i>
+            </div>
+            <div class="text-left">
+              <h3 class="font-black text-slate-800 text-[1rem]">กำหนดการงาน (Schedule)</h3>
+              <p class="text-[13px] text-slate-500 font-medium mt-0.5">คลิกเพื่อดูรายละเอียดเวลาทั้งหมด</p>
+            </div>
+          </div>
+          <i class="fi fi-sr-angle-right text-slate-300 group-hover:text-blue-500 transition-colors text-xl"></i>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- Mobile Bottom Navigation Bar (iOS Style) -->
+<nav class="fixed bottom-0 left-0 w-full z-40 md:hidden flex pb-safe bottom-nav">
+  <button id="navHomeBtn" class="flex-1 pt-4 pb-2 flex flex-col items-center gap-1.5 text-blue-600 transition-colors">
+      <i class="fi fi-sr-home text-2xl"></i>
+      <span class="text-[10px] font-black tracking-wide">หน้าหลัก</span>
+  </button>
+  <button id="navScheduleBtn" class="flex-1 pt-4 pb-2 flex flex-col items-center gap-1.5 text-slate-400 hover:text-blue-600 transition-colors">
+      <i class="fi fi-sr-calendar-lines text-2xl"></i>
+      <span class="text-[10px] font-black tracking-wide">กำหนดการ</span>
+  </button>
+</nav>
+
+<!-- Full Screen Schedule Modal -->
+<div id="scheduleModal" class="fixed inset-0 z-50 flex flex-col closed bg-slate-50/90 backdrop-blur-xl">
+  
+  <!-- Modal Header -->
+  <div class="bg-white/80 backdrop-blur-md px-6 py-5 border-b border-slate-200/60 flex items-center justify-between shadow-sm pt-safe z-10">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+          <i class="fi fi-sr-calendar-lines mt-1"></i>
+        </div>
+        <h3 class="text-xl font-black text-slate-900 tracking-tight">กำหนดการงาน</h3>
+      </div>
+      <button id="closeModalBtn" class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-200 hover:text-slate-800 transition-colors">
+          <i class="fi fi-sr-cross mt-1 text-xs"></i>
+      </button>
+  </div>
+  
+  <!-- Modal Content (Timeline) -->
+  <div class="flex-1 overflow-y-auto p-6 md:p-10 pb-32 md:pb-10 custom-scrollbar">
+      <div class="max-w-3xl mx-auto bg-white rounded-3xl p-6 md:p-10 shadow-sm border border-slate-100">
+        
+        <ul class="relative border-l-2 border-slate-100 ml-3 space-y-8">
+          
+          <li class="pl-8 relative">
+            <div class="absolute w-4 h-4 bg-orange-500 rounded-full -left-[9px] top-1 ring-4 ring-white shadow-sm"></div>
+            <div class="text-[13px] font-black text-orange-500 mb-1 tracking-widest">8.00 - 9.00 น.</div>
+            <div class="text-[15px] text-slate-700 font-bold leading-relaxed">ลงทะเบียนสื่อมวลชนและผู้เข้าร่วมงาน</div>
+            <div class="text-[14px] text-slate-500 mt-1"><i class="fi fi-sr-marker text-xs mr-1"></i> ณ ห้องบรรยาย 2 ชั้น 1</div>
+          </li>
+          
+          <li class="pl-8 relative">
+            <div class="absolute w-4 h-4 bg-blue-500 rounded-full -left-[9px] top-1 ring-4 ring-white shadow-sm"></div>
+            <div class="text-[13px] font-black text-blue-500 mb-1 tracking-widest">9.00 - 9.15 น.</div>
+            <div class="text-[15px] text-slate-700 font-bold leading-relaxed">พิธีกรกล่าวแนะนำและนำชมวิดีทัศน์ราชวิทยาลัยจุฬาภรณ์</div>
+          </li>
+          
+          <li class="pl-8 relative">
+            <div class="absolute w-4 h-4 bg-blue-500 rounded-full -left-[9px] top-1 ring-4 ring-white shadow-sm"></div>
+            <div class="text-[13px] font-black text-blue-500 mb-1 tracking-widest">9.15 - 9.30 น.</div>
+            <div class="text-[15px] text-slate-700 font-bold leading-relaxed">
+              การกล่าวต้อนรับและแสดงวิสัยทัศน์การจัดตั้งคณะวิศวกรรมศาสตร์
+              <div class="bg-blue-50 border border-blue-100 rounded-xl p-3 mt-2">
+                <span class="text-blue-700 font-bold block mb-1">หัวข้อ "พลิกโฉมวิศวกรชีวการแพทย์ สู่ความเป็นเลิศเพื่อทุกชีวิต"</span>
+                <span class="text-slate-600 text-[13px] block font-medium">โดย ผู้ช่วยศาสตราจารย์ ดร.พรภพ นัยเนตร (รักษาการคณบดีฯ)</span>
+              </div>
+            </div>
+          </li>
+          
+          <li class="pl-8 relative">
+            <div class="absolute w-4 h-4 bg-blue-500 rounded-full -left-[9px] top-1 ring-4 ring-white shadow-sm"></div>
+            <div class="text-[13px] font-black text-blue-500 mb-1 tracking-widest">9.30 - 9.50 น.</div>
+            <div class="text-[15px] text-slate-700 font-bold leading-relaxed">
+              นำเสนอข้อมูลหลักสูตรวิศวกรรมศาสตรบัณฑิต สาขาวิชาวิศวกรรมชีวการแพทย์
+              <div class="bg-blue-50 border border-blue-100 rounded-xl p-3 mt-2">
+                <span class="text-blue-700 font-bold block mb-1">หัวข้อ: "เจาะลึกเบื้องหลังวิศวกรชีวการแพทย์ ผู้ขับเคลื่อนสุขภาพแห่งอนาคต"</span>
+                <span class="text-slate-600 text-[13px] block font-medium">โดย อาจารย์ประจำหลักสูตร</span>
+              </div>
+            </div>
+          </li>
+          
+          <li class="pl-8 relative">
+            <div class="absolute w-4 h-4 bg-orange-500 rounded-full -left-[9px] top-1 ring-4 ring-white shadow-sm"></div>
+            <div class="text-[13px] font-black text-orange-500 mb-1 tracking-widest">09.50 - 10.05 น.</div>
+            <div class="text-[15px] text-slate-700 font-bold leading-relaxed">
+              แขกรับเชิญพิเศษผู้ที่เป็นแรงบันดาลใจ นำเสนอแชร์มุมมอง
+              <div class="text-orange-600 font-bold mt-1 text-[14px]">หัวข้อ: "เปลี่ยนความชอบวิศวะ ให้เป็นนวัตกรรมช่วยชีวิตคนได้จริง"</div>
+            </div>
+          </li>
+          
+          <li class="pl-8 relative">
+            <div class="absolute w-4 h-4 bg-blue-500 rounded-full -left-[9px] top-1 ring-4 ring-white shadow-sm"></div>
+            <div class="text-[13px] font-black text-blue-500 mb-1 tracking-widest">10.05 - 10.20 น.</div>
+            <div class="text-[15px] text-slate-700 font-bold leading-relaxed">สื่อมวลชนสัมภาษณ์ คณบดี อาจารย์ KOL และถ่ายภาพร่วมกัน</div>
+          </li>
+          
+          <li class="pl-8 relative">
+            <div class="absolute w-4 h-4 bg-blue-500 rounded-full -left-[9px] top-1 ring-4 ring-white shadow-sm"></div>
+            <div class="text-[13px] font-black text-blue-500 mb-1 tracking-widest">10.20 - 11.50 น.</div>
+            <div class="text-[15px] text-slate-700 font-bold leading-relaxed">
+              นำเยี่ยมชมห้องการเรียนการสอน ห้องสมุดและห้องปฏิบัติการ
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-3">
+                <div class="bg-slate-50 border border-slate-100 p-3 rounded-xl text-[13.5px] font-medium text-slate-600 flex items-start gap-2"><i class="fi fi-sr-microscope text-blue-500 mt-0.5"></i> Medical Devices</div>
+                <div class="bg-slate-50 border border-slate-100 p-3 rounded-xl text-[13.5px] font-medium text-slate-600 flex items-start gap-2"><i class="fi fi-sr-heart-rate text-blue-500 mt-0.5"></i> Cardiovascular Engineering</div>
+                <div class="bg-slate-50 border border-slate-100 p-3 rounded-xl text-[13.5px] font-medium text-slate-600 flex items-start gap-2 md:col-span-2"><i class="fi fi-sr-print text-blue-500 mt-0.5"></i> From Design to Additive Manufacturing in Medicine</div>
+                <div class="bg-slate-50 border border-slate-100 p-3 rounded-xl text-[13.5px] font-medium text-slate-600 flex items-start gap-2 md:col-span-2"><i class="fi fi-sr-robot text-blue-500 mt-0.5"></i> Robotics for medical applications</div>
+              </div>
+            </div>
+          </li>
+          
+          <li class="pl-8 relative">
+            <div class="absolute w-4 h-4 bg-orange-500 rounded-full -left-[9px] top-1 ring-4 ring-white shadow-sm"></div>
+            <div class="text-[13px] font-black text-orange-500 mb-1 tracking-widest">11.50 - 12.00 น.</div>
+            <div class="text-[15px] text-slate-700 font-bold leading-relaxed">ทำแบบประเมินออนไลน์</div>
+          </li>
+          
+          <li class="pl-8 relative">
+            <div class="absolute w-4 h-4 bg-orange-500 rounded-full -left-[9px] top-1 ring-4 ring-white shadow-sm"></div>
+            <div class="text-[13px] font-black text-orange-500 mb-1 tracking-widest">12.00 - 13.00 น.</div>
+            <div class="text-[15px] text-slate-700 font-bold leading-relaxed">รับประทานอาหารกลางวัน ณ ห้องอาหาร ชั้น 1</div>
+          </li>
+          
+        </ul>
+      </div>
+  </div>
+</div>
+
+<script>
+  // API URL 40 ที่นั่ง
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzo7pVRuFPZd5gsy5j8MJlg9xY1eZY0w0F1xO0wg9y03_JXE2_fMRm9hv5g1vGeG7Ox/exec";
+  const MAX_SEATS = 40; 
+
+  window.onload = function() {
+    // 1. เรียกดึงข้อมูลจาก API
+    fetch(SCRIPT_URL + "?action=getSeats")
+      .then(response => {
+          if(!response.ok) throw new Error("Network issue");
+          return response.json();
+      })
+      .then(data => updateDashboard(data))
+      .catch(error => {
+          console.error('API Error or Empty data:', error);
+          // BUG FIX: หาก API ล่ม หรือยังไม่มีข้อมูลใดๆ (0 คน) ให้แสดงยอดเป็น 0 คน
+          updateDashboard({ total: MAX_SEATS, remaining: MAX_SEATS });
+      });
+
+    // 2. ระบบ Modal กำหนดการ
+    const scheduleModal = document.getElementById('scheduleModal');
+    const navScheduleBtn = document.getElementById('navScheduleBtn');
+    const navHomeBtn = document.getElementById('navHomeBtn');
+    const desktopScheduleBtn = document.getElementById('desktopScheduleBtn');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+
+    function openScheduleModal() {
+      scheduleModal.classList.remove('closed');
+      scheduleModal.classList.add('open');
+      
+      if(navScheduleBtn && navHomeBtn) {
+        navScheduleBtn.classList.replace('text-slate-400', 'text-blue-600');
+        navHomeBtn.classList.replace('text-blue-600', 'text-slate-400');
+      }
+    }
+
+    function closeScheduleModal() {
+      scheduleModal.classList.remove('open');
+      scheduleModal.classList.add('closed');
+      
+      if(navScheduleBtn && navHomeBtn) {
+        navHomeBtn.classList.replace('text-slate-400', 'text-blue-600');
+        navScheduleBtn.classList.replace('text-blue-600', 'text-slate-400');
+      }
+    }
+
+    if(navScheduleBtn) navScheduleBtn.addEventListener('click', openScheduleModal);
+    if(desktopScheduleBtn) desktopScheduleBtn.addEventListener('click', openScheduleModal);
+    if(closeModalBtn) closeModalBtn.addEventListener('click', closeScheduleModal);
+    if(navHomeBtn) navHomeBtn.addEventListener('click', closeScheduleModal);
+  };
+
+  function updateDashboard(data) {
+    // ตรวจสอบค่า เผื่อได้ undefined มาให้ใช้ MAX_SEATS แทน
+    const total = typeof data.total === 'number' ? data.total : MAX_SEATS; 
+    let remaining = typeof data.remaining === 'number' ? data.remaining : MAX_SEATS; 
+
+    // ป้องกันค่าติดลบ
+    if (remaining < 0) remaining = 0;
+    if (remaining > total) remaining = total;
+
+    const used = total - remaining; // จำนวนคนที่ลงทะเบียนแล้ว (ถ้าไม่มีเลยจะเท่ากับ 0)
+    const percent = (used / MAX_SEATS) * 100; 
+
+    const countText = document.getElementById('seatCountText');
+    const progressBar = document.getElementById('seatProgressBar');
+    const remainingBadge = document.getElementById('remainingBadge');
+    const regBtn = document.getElementById('regBtn');
+    const regLink = document.getElementById('regLink');
+
+    // อัปเดตตัวเลข (แสดงเป็น 0 ทันที ไม่ใช่ --)
+    countText.innerText = used;
+    progressBar.style.width = percent + '%';
+    
+    if(remaining > 0) {
+      remainingBadge.innerText = 'ว่าง ' + remaining + ' ที่นั่ง';
+      remainingBadge.className = 'px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-600 text-[11px] font-bold';
+      progressBar.className = 'h-full bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full transition-all duration-1000 ease-out';
+    } else {
+      remainingBadge.innerText = 'ที่นั่งเต็มแล้ว';
+      remainingBadge.className = 'px-2.5 py-1 rounded-lg bg-red-100 text-red-600 text-[11px] font-bold';
+      progressBar.className = 'h-full bg-gradient-to-r from-red-400 to-red-600 rounded-full transition-all duration-1000 ease-out';
+    }
+
+    if(percent >= 80 && percent < 100) { 
+       progressBar.className = 'h-full bg-gradient-to-r from-orange-400 to-orange-500 rounded-full transition-all duration-1000 ease-out';
+       remainingBadge.className = 'px-2.5 py-1 rounded-lg bg-orange-100 text-orange-600 text-[11px] font-bold';
+    }
+
+    // กรณีที่นั่งเต็ม (ปิดปุ่ม)
+    if(remaining <= 0) {
+      countText.classList.replace('text-slate-800', 'text-red-500');
+      progressBar.style.width = '100%';
+      
+      regBtn.innerHTML = '<i class="fi fi-sr-lock mt-1 text-xl"></i> ยอดลงทะเบียนเต็มแล้ว';
+      regBtn.className = 'btn-disabled flex justify-center items-center gap-3';
+      regBtn.disabled = true;
+      
+      regLink.href = "javascript:void(0)";
+      regLink.style.cursor = "not-allowed";
+    }
+  }
+</script>
+</body>
+</html>
