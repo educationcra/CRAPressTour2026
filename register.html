@@ -64,11 +64,11 @@
     .c-select-option:hover { background: #f8fafc; color: #2563eb; padding-left: 1.5rem; }
     .c-select-option.selected { background: #eff6ff; color: #1d4ed8; font-weight: 700; border-left: 4px solid #2563eb; padding-left: 1rem;}
     
-    /* Autocomplete */
+    /* Autocomplete (Fixed z-index to be on top of everything) */
     .autocomplete-dropdown { 
-        position: absolute; z-index: 1050; width: 100%; background: #fff; 
+        position: absolute; z-index: 9999; width: 100%; background: #fff; 
         border: 1px solid #e2e8f0; border-radius: 1rem; max-height: 250px; 
-        overflow-y: auto; display: none; box-shadow: 0 20px 40px -10px rgba(0,0,0,0.1); margin-top: 8px; 
+        overflow-y: auto; display: none; box-shadow: 0 20px 50px -10px rgba(0,0,0,0.2); margin-top: 8px; 
     }
     .autocomplete-dropdown li { padding: 1rem 1.25rem; border-bottom: 1px solid #f8fafc; cursor: pointer; transition: 0.2s; font-size: 0.95rem; color: #475569; font-weight: 500; }
     .autocomplete-dropdown li:hover { background-color: #f8fafc; color: #2563eb; padding-left: 1.5rem; }
@@ -107,14 +107,14 @@
     
     <!-- Left Panel (Visual) -->
     <div class="hidden lg:flex lg:w-5/12 xl:w-1/2 bg-white flex-col items-center justify-center border-r border-slate-100 p-12 relative overflow-hidden">
-        <div class="w-full max-w-[500px] h-full flex flex-col justify-between py-10 relative z-10">
+        <div class="w-full max-w-[550px] h-full flex flex-col justify-between py-10 relative z-10">
             <div>
                 <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-xs font-black tracking-widest uppercase mb-10 text-blue-600">
                     <i class="fi fi-sr-edit"></i> Registration Portal
                 </span>
                 
                 <!-- โลโก้ปรับขยายใหญ่ขึ้น -->
-                <img src="https://s.imgz.io/2026/08/05/0.1f7cac65cbeebea61.png" alt="CRA Press Tour 2026" class="w-full max-w-[450px] xl:max-w-[500px] h-auto mb-10 object-contain drop-shadow-sm">
+                <img src="https://s.imgz.io/2026/08/05/0.1f7cac65cbeebea61.png" alt="CRA Press Tour 2026" class="w-full max-w-[450px] xl:max-w-[550px] h-auto mb-10 object-contain drop-shadow-sm">
                 
                 <h1 class="text-4xl xl:text-5xl font-black leading-[1.15] tracking-tight mb-6 text-slate-900">
                     CRA Education <br>
@@ -145,9 +145,10 @@
     <!-- Right Panel (Form) -->
     <div class="w-full lg:w-7/12 xl:w-1/2 flex flex-col relative items-center justify-center bg-[#f8fafc]/80 backdrop-blur-sm lg:bg-transparent">
         
-        <!-- ขอบเขตของ Form (จัด Alignment กลาง) -->
+        <!-- ขอบเขตของ Form (จัด Alignment กลางเสมอ ไม่ไหล) -->
         <div class="w-full max-w-[620px] px-6 py-12 sm:px-10 flex flex-col min-h-screen justify-center relative z-10">
             
+            <!-- ปุ่มกลับหน้าหลัก ให้อยู่ใน Container เดียวกับ Form -->
             <div class="flex justify-between items-center mb-10 w-full">
                <a href="index.html" class="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-blue-600 font-bold transition-colors no-underline bg-white px-5 py-2.5 rounded-full border border-slate-200 shadow-sm">
                  <i class="fi fi-sr-arrow-small-left mt-0.5 text-lg"></i> กลับหน้าหลัก
@@ -210,7 +211,6 @@
                   </div>
                 </div>
 
-                <!-- แก้ไขกลับมาเป็นสำหรับนักเรียนโดยเฉพาะ -->
                 <div id="step2" class="step-section">
                   <div class="mb-8">
                       <h2 class="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">ข้อมูลการศึกษา</h2>
@@ -219,7 +219,8 @@
                   
                   <div class="input-wrapper">
                     <label class="input-label">โรงเรียนที่กำลังศึกษา<span class="req">*</span></label>
-                    <input type="text" id="schoolSearch" class="input-field" placeholder="พิมพ์ชื่อโรงเรียนเพื่อค้นหา..." oninput="searchSchool(this.value)" autocomplete="off">
+                    <!-- ใส่ onfocus เพื่อให้เวลาผู้ใช้คลิกกลับมา กล่องค้นหาจะเด้งขึ้นมาใหม่ -->
+                    <input type="text" id="schoolSearch" class="input-field" placeholder="พิมพ์ชื่อโรงเรียนเพื่อค้นหา..." oninput="searchSchool(this.value)" onfocus="searchSchool(this.value)" autocomplete="off">
                     <!-- Dropdown ค้นหาโรงเรียน -->
                     <ul id="schoolDropdown" class="autocomplete-dropdown"></ul>
                     <p class="text-xs text-slate-400 mt-2 font-medium"><i class="fi fi-sr-info text-blue-500 mr-1"></i> หากไม่พบในระบบ สามารถพิมพ์ชื่อเต็มและระบุจังหวัดด้านล่างได้เลย</p>
@@ -331,7 +332,6 @@
     const provincesList = ["กรุงเทพมหานคร","กระบี่","กาญจนบุรี","กาฬสินธุ์","กำแพงเพชร","ขอนแก่น","จันทบุรี","ฉะเชิงเทรา","ชลบุรี","ชัยนาท","ชัยภูมิ","ชุมพร","เชียงราย","เชียงใหม่","ตรัง","ตราด","ตาก","นครนายก","นครปฐม","นครพนม","นครราชสีมา","นครศรีธรรมราช","นครสวรรค์","นนทบุรี","นราธิวาส","น่าน","บึงกาฬ","บุรีรัมย์","ปทุมธานี","ประจวบคีรีขันธ์","ปราจีนบุรี","ปัตตานี","พระนครศรีอยุธยา","พะเยา","พังงา","พัทลุง","พิจิตร","พิษณุโลก","เพชรบุรี","เพชรบูรณ์","แพร่","ภูเก็ต","มหาสารคาม","มุกดาหาร","แม่ฮ่องสอน","ยโสธร","ยะลา","ร้อยเอ็ด","ระนอง","ระยอง","ราชบุรี","ลพบุรี","ลำปาง","ลำพูน","เลย","ศรีสะเกษ","สกลนคร","สงขลา","สตูล","สมุทรปราการ","สมุทรสงคราม","สมุทรสาคร","สระแก้ว","สระบุรี","สิงห์บุรี","สุโขทัย","สุพรรณบุรี","สุราษฎร์ธานี","สุรินทร์","หนองคาย","หนองบัวลำภู","อ่างทอง","อำนาจเจริญ","อุดรธานี","อุตรดิตถ์","อุทัยธานี","อุบลราชธานี"];
     const domains = ['@gmail.com', '@cra.ac.th', '@hotmail.com', '@outlook.com'];
     
-    // อ้างอิงแหล่งที่มากลับมาเป็นกลุ่มเป้าหมายนักเรียน
     const sources = [
       "CRA Roadshow (ที่โรงเรียนของท่าน)", 
       "CRA Open House",
@@ -465,29 +465,45 @@
       else el.value = v;
     }
 
+    // ฟังก์ชันค้นหาโรงเรียน (แก้ไขเรื่องอักขระพิเศษ)
     function searchSchool(query) {
       const drop = document.getElementById('schoolDropdown');
       if(query.trim().length < 2) { drop.style.display = 'none'; return; }
       
-      // ถ้าข้อมูลยังโหลดไม่เสร็จหรือ API ช้า
       if(!schoolData || schoolData.length === 0) {
-          drop.innerHTML = `<li class="text-center text-slate-400 font-medium py-3"><i class="fi fi-sr-spinner animate-spin"></i> กำลังโหลดข้อมูลโรงเรียน...</li>`;
+          drop.innerHTML = `<li class="text-center text-slate-400 font-medium py-3"><i class="fi fi-sr-spinner animate-spin"></i> กำลังเชื่อมต่อฐานข้อมูล...</li>`;
           drop.style.display = 'block';
           return;
       }
       
-      const res = schoolData.filter(s => s[0].toLowerCase().includes(query.toLowerCase())).slice(0, 10);
+      const lowerQuery = query.toLowerCase();
+      const res = schoolData.filter(s => s[0].toLowerCase().includes(lowerQuery)).slice(0, 10);
+      
       if(res.length > 0) {
-          drop.innerHTML = res.map(s => `<li class="flex justify-between items-center" onclick="selectSchool('${s[0]}','${s[1]}')"><span class="font-bold text-slate-800">${s[0]}</span> <span class="text-[12px] font-bold text-blue-500 bg-blue-50 px-2 py-1 rounded-md">จ.${s[1]}</span></li>`).join('');
+          drop.innerHTML = res.map(s => {
+              // ป้องกัน Error หากรายชื่อโรงเรียนมีเครื่องหมาย ' หรือ "
+              const safeName = s[0].replace(/'/g, "&#39;").replace(/"/g, "&quot;");
+              const safeProv = s[1].replace(/'/g, "&#39;").replace(/"/g, "&quot;");
+              return `<li class="flex justify-between items-center" onclick="selectSchool('${safeName}','${safeProv}')"><span class="font-bold text-slate-800">${s[0]}</span> <span class="text-[12px] font-bold text-blue-500 bg-blue-50 px-2 py-1 rounded-md">จ.${s[1]}</span></li>`;
+          }).join('');
       } else {
-          drop.innerHTML = `<li class="text-center text-slate-400 font-medium py-3">พิมพ์ชื่อโรงเรียนเต็มได้เลยครับ</li>`;
+          drop.innerHTML = `<li class="text-center text-slate-400 font-medium py-3 leading-relaxed">ไม่พบข้อมูลโรงเรียนนี้ในระบบ<br><span class="text-xs">สามารถพิมพ์ชื่อเต็ม และเลือกจังหวัดเองด้านล่างได้เลยครับ</span></li>`;
       }
       drop.style.display = 'block';
     }
 
+    // ฟังก์ชันเมื่อคลิกเลือกโรงเรียน (ถอดรหัสข้อความ + เติมจังหวัดอัตโนมัติ)
     function selectSchool(name, prov) {
-      document.getElementById('schoolSearch').value = name;
-      setCustomSelectValue('province', prov);
+      const decodeHtml = (html) => {
+          const txt = document.createElement("textarea");
+          txt.innerHTML = html;
+          return txt.value;
+      };
+      // เติมชื่อโรงเรียน
+      document.getElementById('schoolSearch').value = decodeHtml(name);
+      // เติมจังหวัดอัตโนมัติ
+      setCustomSelectValue('province', decodeHtml(prov));
+      
       document.getElementById('schoolDropdown').style.display = 'none';
     }
 
