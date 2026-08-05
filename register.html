@@ -113,7 +113,6 @@
                     <i class="fi fi-sr-edit"></i> Registration Portal
                 </span>
                 
-                <!-- โลโก้ปรับขยายใหญ่ขึ้น -->
                 <img src="https://s.imgz.io/2026/08/05/0.1f7cac65cbeebea61.png" alt="CRA Press Tour 2026" class="w-full max-w-[450px] xl:max-w-[550px] h-auto mb-10 object-contain drop-shadow-sm">
                 
                 <h1 class="text-4xl xl:text-5xl font-black leading-[1.15] tracking-tight mb-6 text-slate-900">
@@ -163,7 +162,6 @@
                <a href="index.html" class="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-blue-600 font-bold transition-colors no-underline bg-white px-5 py-2.5 rounded-full border border-slate-200 shadow-sm">
                  <i class="fi fi-sr-arrow-small-left mt-0.5 text-lg"></i> กลับหน้าหลัก
                </a>
-               <!-- โลโก้มือถือปรับให้ใหญ่ขึ้นเช่นกัน -->
                <img src="https://s.imgz.io/2026/08/05/0.1f7cac65cbeebea61.png" alt="CRA Logo" class="h-20 sm:h-24 lg:hidden object-contain drop-shadow-sm">
             </div>
 
@@ -230,9 +228,7 @@
                   
                   <div class="input-wrapper">
                     <label class="input-label">โรงเรียนที่กำลังศึกษา<span class="req">*</span></label>
-                    <!-- ใส่ onfocus เพื่อให้เวลาผู้ใช้คลิกกลับมา กล่องค้นหาจะเด้งขึ้นมาใหม่ -->
                     <input type="text" id="schoolSearch" class="input-field" placeholder="พิมพ์ชื่อโรงเรียนเพื่อค้นหา..." oninput="searchSchool(this.value)" onfocus="searchSchool(this.value)" autocomplete="off">
-                    <!-- Dropdown ค้นหาโรงเรียน -->
                     <ul id="schoolDropdown" class="autocomplete-dropdown"></ul>
                     <p class="text-xs text-slate-400 mt-2 font-medium"><i class="fi fi-sr-info text-blue-500 mr-1"></i> หากไม่พบในระบบ สามารถพิมพ์ชื่อเต็มและระบุจังหวัดด้านล่างได้เลย</p>
                   </div>
@@ -354,7 +350,26 @@
     ];
 
     window.onload = () => {
-      // ดึงข้อมูลโรงเรียนจาก Google Script สำหรับระบบ Autocomplete
+      // 1. ตรวจสอบที่นั่งว่างก่อนเริ่ม หากเต็มให้เด้งกลับหน้าหลักทันที
+      fetch(SCRIPT_URL + "?action=getSeats")
+        .then(response => response.json())
+        .then(data => {
+            if(data.remaining !== undefined && data.remaining <= 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'ที่นั่งเต็มแล้ว',
+                    text: 'ขออภัย จำนวนที่นั่งถูกจองเต็มโควตา 40 ที่นั่งแล้วครับ',
+                    confirmButtonText: 'กลับหน้าหลัก',
+                    confirmButtonColor: '#2563eb',
+                    allowOutsideClick: false
+                }).then(() => {
+                    window.location.href = 'index.html';
+                });
+            }
+        })
+        .catch(error => console.error('Error checking seats:', error));
+
+      // 2. ดึงข้อมูลโรงเรียนจาก Google Script สำหรับระบบ Autocomplete
       fetch(SCRIPT_URL + "?action=getSchools")
         .then(response => response.json())
         .then(data => { schoolData = data; })
