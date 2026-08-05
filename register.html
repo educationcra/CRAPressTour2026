@@ -95,6 +95,91 @@
     .hero-blur { position: fixed; border-radius: 999px; filter: blur(120px); opacity: 0.3; pointer-events: none; z-index: 0; }
     .blur-a { width: 500px; height: 500px; background: #93c5fd; top: -100px; left: -100px; }
     .blur-b { width: 500px; height: 500px; background: #fed7aa; bottom: -100px; right: -100px; }
+
+    /* ปรับแต่ง Radio แบบใหม่ใน SweetAlert2 */
+    .swal2-radio {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: flex-start !important;
+      gap: 12px;
+      padding: 10px 20px;
+    }
+    .swal2-radio label {
+      margin: 0 !important;
+      width: 100%;
+      text-align: left;
+      cursor: pointer;
+    }
+    .swal2-radio input[type="radio"] {
+      margin-right: 12px !important;
+    }
+
+    /* CSS สำหรับ Grade Cards ใน SweetAlert2 */
+    .grade-card-container {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+    
+    @media (min-width: 640px) {
+        .grade-card-container {
+            flex-direction: row;
+        }
+    }
+
+    .grade-card {
+        flex: 1;
+        border: 2px solid #e2e8f0;
+        border-radius: 1rem;
+        padding: 1.5rem 1rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        background-color: #ffffff;
+    }
+
+    .grade-card:hover {
+        border-color: #93c5fd;
+        background-color: #eff6ff;
+        transform: translateY(-2px);
+    }
+
+    .grade-card.selected {
+        border-color: #2563eb;
+        background-color: #eff6ff;
+        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.15);
+    }
+
+    .grade-icon {
+        width: 3rem;
+        height: 3rem;
+        margin-bottom: 1rem;
+        color: #64748b;
+        transition: color 0.2s ease;
+    }
+
+    .grade-card:hover .grade-icon {
+        color: #3b82f6;
+    }
+
+    .grade-card.selected .grade-icon {
+        color: #2563eb;
+    }
+
+    .grade-title {
+        font-weight: 700;
+        font-size: 1rem;
+        color: #334155;
+    }
+
+    .grade-card.selected .grade-title {
+        color: #1d4ed8;
+    }
   </style>
 </head>
 <body class="min-h-screen relative text-slate-800">
@@ -404,7 +489,7 @@
       });
     };
 
-    // ฟังก์ชัน Popup ถามชั้นเรียน
+    // ฟังก์ชัน Popup ถามชั้นเรียนแบบการ์ด
     function askGradePopup() {
         Swal.fire({
             title: 'คุณคือนักเรียนระดับมัธยมศึกษาตอนปลาย ใช่หรือไม่?',
@@ -418,33 +503,63 @@
             allowEscapeKey: false
         }).then((result) => {
             if (result.isConfirmed) {
+                // สร้าง HTML สำหรับการ์ด
+                const cardsHtml = `
+                    <div class="grade-card-container" id="gradeSelectionContainer">
+                        <div class="grade-card" data-value="มัธยมศึกษาปีที่ 4" onclick="selectGradeCard(this)">
+                            <svg class="grade-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
+                            </svg>
+                            <span class="grade-title">มัธยมศึกษาปีที่ 4</span>
+                        </div>
+                        <div class="grade-card" data-value="มัธยมศึกษาปีที่ 5" onclick="selectGradeCard(this)">
+                            <svg class="grade-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                            </svg>
+                            <span class="grade-title">มัธยมศึกษาปีที่ 5</span>
+                        </div>
+                        <div class="grade-card" data-value="มัธยมศึกษาปีที่ 6" onclick="selectGradeCard(this)">
+                            <svg class="grade-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path d="M12 14l9-5-9-5-9 5 9 5z" />
+                                <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
+                            </svg>
+                            <span class="grade-title">มัธยมศึกษาปีที่ 6</span>
+                        </div>
+                    </div>
+                `;
+
                 Swal.fire({
                     title: 'โปรดเลือกระดับชั้นของคุณ',
-                    input: 'radio',
-                    inputOptions: {
-                        'มัธยมศึกษาปีที่ 4': 'ม.4',
-                        'มัธยมศึกษาปีที่ 5': 'ม.5',
-                        'มัธยมศึกษาปีที่ 6': 'ม.6'
-                    },
-                    inputValidator: (value) => {
-                        if (!value) {
-                            return 'กรุณาเลือกระดับชั้นเพื่อดำเนินการต่อ!'
-                        }
-                    },
-                    confirmButtonText: 'ตกลง',
-                    confirmButtonColor: '#2563eb',
+                    html: cardsHtml,
+                    showConfirmButton: false, // ซ่อนปุ่ม Confirm เพราะเราจะให้คลิกที่การ์ดแล้วผ่านเลย
                     allowOutsideClick: false,
-                    allowEscapeKey: false
-                }).then((gradeResult) => {
-                    if (gradeResult.isConfirmed) {
-                        // เก็บค่าระดับชั้นไว้ใน Input Hidden 
-                        document.getElementById('grade').value = gradeResult.value;
-                    }
+                    allowEscapeKey: false,
+                    width: '600px' // ขยายขนาด popup ให้กว้างพอสำหรับการ์ด 3 ใบ
                 });
             } else {
                 document.getElementById('grade').value = 'ไม่ใช่ระดับมัธยมศึกษาตอนปลาย';
             }
         });
+    }
+
+    // ฟังก์ชันจัดการเมื่อคลิกเลือกการ์ด
+    function selectGradeCard(cardElement) {
+        // เอา class selected ออกจากการ์ดทั้งหมด
+        const cards = document.querySelectorAll('.grade-card');
+        cards.forEach(card => card.classList.remove('selected'));
+        
+        // เพิ่ม class selected ให้กับการ์ดที่ถูกคลิก
+        cardElement.classList.add('selected');
+        
+        // ดึงค่า value
+        const selectedValue = cardElement.getAttribute('data-value');
+        
+        // หน่วงเวลาเล็กน้อยเพื่อให้เห็น animation ก่อนปิด
+        setTimeout(() => {
+            document.getElementById('grade').value = selectedValue;
+            Swal.close();
+        }, 300);
     }
 
     function toggleOtherSource() {
