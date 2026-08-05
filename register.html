@@ -171,6 +171,8 @@
             </div>
 
             <form id="regForm" class="w-full">
+                <!-- เก็บค่าระดับชั้นที่ได้จาก Popup -->
+                <input type="hidden" id="grade" value="">
                 
                 <div id="step1" class="step-section active visible ani-next">
                   <div class="mb-8">
@@ -240,20 +242,6 @@
                         <div class="c-select-dropdown" id="provinceList"></div>
                     </div>
                     <input type="hidden" id="province">
-                  </div>
-
-                  <div class="input-wrapper">
-                    <label class="input-label">ระดับชั้น<span class="req">*</span></label>
-                    <div class="c-select-container" id="c-grade">
-                        <div class="c-select-trigger" tabindex="0"><span>เลือกระดับชั้น</span> <i class="fi fi-sr-angle-small-down"></i></div>
-                        <div class="c-select-dropdown">
-                          <div class="c-select-option" data-value="มัธยมศึกษาปีที่ 4">มัธยมศึกษาปีที่ 4</div>
-                          <div class="c-select-option" data-value="มัธยมศึกษาปีที่ 5">มัธยมศึกษาปีที่ 5</div>
-                          <div class="c-select-option" data-value="มัธยมศึกษาปีที่ 6">มัธยมศึกษาปีที่ 6</div>
-                          <div class="c-select-option" data-value="อื่นๆ">อื่นๆ</div>
-                        </div>
-                    </div>
-                    <input type="hidden" id="grade">
                   </div>
 
                   <div class="flex gap-4 mt-10">
@@ -339,11 +327,12 @@
     const provincesList = ["กรุงเทพมหานคร","กระบี่","กาญจนบุรี","กาฬสินธุ์","กำแพงเพชร","ขอนแก่น","จันทบุรี","ฉะเชิงเทรา","ชลบุรี","ชัยนาท","ชัยภูมิ","ชุมพร","เชียงราย","เชียงใหม่","ตรัง","ตราด","ตาก","นครนายก","นครปฐม","นครพนม","นครราชสีมา","นครศรีธรรมราช","นครสวรรค์","นนทบุรี","นราธิวาส","น่าน","บึงกาฬ","บุรีรัมย์","ปทุมธานี","ประจวบคีรีขันธ์","ปราจีนบุรี","ปัตตานี","พระนครศรีอยุธยา","พะเยา","พังงา","พัทลุง","พิจิตร","พิษณุโลก","เพชรบุรี","เพชรบูรณ์","แพร่","ภูเก็ต","มหาสารคาม","มุกดาหาร","แม่ฮ่องสอน","ยโสธร","ยะลา","ร้อยเอ็ด","ระนอง","ระยอง","ราชบุรี","ลพบุรี","ลำปาง","ลำพูน","เลย","ศรีสะเกษ","สกลนคร","สงขลา","สตูล","สมุทรปราการ","สมุทรสงคราม","สมุทรสาคร","สระแก้ว","สระบุรี","สิงห์บุรี","สุโขทัย","สุพรรณบุรี","สุราษฎร์ธานี","สุรินทร์","หนองคาย","หนองบัวลำภู","อ่างทอง","อำนาจเจริญ","อุดรธานี","อุตรดิตถ์","อุทัยธานี","อุบลราชธานี"];
     const domains = ['@gmail.com', '@cra.ac.th', '@hotmail.com', '@outlook.com'];
     
+    // อัปเดตรายการช่องทางรับข่าวสาร
     const sources = [
       "CRA Roadshow (ที่โรงเรียนของท่าน)", 
       "CRA Open House",
       "Dek-D's TCAS Fair",
-      "สื่อสังคมออนไลน์ Education CRA", 
+      "สื่อสังคมออนไลน์ราชวิทยาลัยจุฬาภรณ์ (ราชวิทยาลัยจุฬาภรณ์, Education CRA, หลักสูตรวิศวกรรมชีวการแพทย์ คณะวิศวกรรมศาสตร์ ราชวิทยาลัยจุฬาภรณ์ )", 
       "เว็บไซต์ราชวิทยาลัยจุฬาภรณ์", 
       "เพื่อน / คนรู้จัก / ครูแนะนำ", 
       "แบนเนอร์ประชาสัมพันธ์"
@@ -365,9 +354,16 @@
                 }).then(() => {
                     window.location.href = 'index.html';
                 });
+            } else {
+                // หากที่นั่งยังไม่เต็ม ให้เรียก Popup ควบคุมการเลือกระดับชั้นขึ้นมาถามทันที
+                askGradePopup();
             }
         })
-        .catch(error => console.error('Error checking seats:', error));
+        .catch(error => {
+            console.error('Error checking seats:', error);
+            // กรณีระบบเช็คที่นั่งขัดข้อง ให้แสดง Popup ใช้งานต่อไปตามปกติ
+            askGradePopup();
+        });
 
       // 2. ดึงข้อมูลโรงเรียนจาก Google Script สำหรับระบบ Autocomplete
       fetch(SCRIPT_URL + "?action=getSchools")
@@ -407,6 +403,49 @@
         emailDrop.style.display = 'block';
       });
     };
+
+    // ฟังก์ชัน Popup ถามชั้นเรียน
+    function askGradePopup() {
+        Swal.fire({
+            title: 'คุณคือนักเรียนระดับมัธยมศึกษาตอนปลาย ใช่หรือไม่?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'ใช่',
+            cancelButtonText: 'ไม่ใช่',
+            confirmButtonColor: '#2563eb',
+            cancelButtonColor: '#94a3b8',
+            allowOutsideClick: false,
+            allowEscapeKey: false
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'โปรดเลือกระดับชั้นของคุณ',
+                    input: 'radio',
+                    inputOptions: {
+                        'มัธยมศึกษาปีที่ 4': 'ม.4',
+                        'มัธยมศึกษาปีที่ 5': 'ม.5',
+                        'มัธยมศึกษาปีที่ 6': 'ม.6'
+                    },
+                    inputValidator: (value) => {
+                        if (!value) {
+                            return 'กรุณาเลือกระดับชั้นเพื่อดำเนินการต่อ!'
+                        }
+                    },
+                    confirmButtonText: 'ตกลง',
+                    confirmButtonColor: '#2563eb',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false
+                }).then((gradeResult) => {
+                    if (gradeResult.isConfirmed) {
+                        // เก็บค่าระดับชั้นไว้ใน Input Hidden 
+                        document.getElementById('grade').value = gradeResult.value;
+                    }
+                });
+            } else {
+                document.getElementById('grade').value = 'ไม่ใช่ระดับมัธยมศึกษาตอนปลาย';
+            }
+        });
+    }
 
     function toggleOtherSource() {
       const wrap = document.getElementById('wrapOtherSource');
@@ -491,7 +530,6 @@
       else el.value = v;
     }
 
-    // ฟังก์ชันค้นหาโรงเรียน (แก้ไขเรื่องอักขระพิเศษ)
     function searchSchool(query) {
       const drop = document.getElementById('schoolDropdown');
       if(query.trim().length < 2) { drop.style.display = 'none'; return; }
@@ -507,7 +545,6 @@
       
       if(res.length > 0) {
           drop.innerHTML = res.map(s => {
-              // ป้องกัน Error หากรายชื่อโรงเรียนมีเครื่องหมาย ' หรือ "
               const safeName = s[0].replace(/'/g, "&#39;").replace(/"/g, "&quot;");
               const safeProv = s[1].replace(/'/g, "&#39;").replace(/"/g, "&quot;");
               return `<li class="flex justify-between items-center" onclick="selectSchool('${safeName}','${safeProv}')"><span class="font-bold text-slate-800">${s[0]}</span> <span class="text-[12px] font-bold text-blue-500 bg-blue-50 px-2 py-1 rounded-md">จ.${s[1]}</span></li>`;
@@ -518,16 +555,13 @@
       drop.style.display = 'block';
     }
 
-    // ฟังก์ชันเมื่อคลิกเลือกโรงเรียน (ถอดรหัสข้อความ + เติมจังหวัดอัตโนมัติ)
     function selectSchool(name, prov) {
       const decodeHtml = (html) => {
           const txt = document.createElement("textarea");
           txt.innerHTML = html;
           return txt.value;
       };
-      // เติมชื่อโรงเรียน
       document.getElementById('schoolSearch').value = decodeHtml(name);
-      // เติมจังหวัดอัตโนมัติ
       setCustomSelectValue('province', decodeHtml(prov));
       
       document.getElementById('schoolDropdown').style.display = 'none';
