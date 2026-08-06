@@ -27,6 +27,12 @@
     
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     
+    /* เพิ่มส่วนนี้เพื่อบังคับไม่ให้มี Scroll แนวนอนเด็ดขาด */
+    html, body {
+      overflow-x: hidden;
+      max-width: 100vw;
+    }
+
     body {
       margin: 0; 
       font-family: 'Noto Sans Thai', sans-serif;
@@ -35,12 +41,12 @@
         radial-gradient(at 0% 0%, hsla(217,100%,94%,0.8) 0, transparent 40%), 
         radial-gradient(at 100% 100%, hsla(28,100%,94%,0.8) 0, transparent 40%);
       color: var(--text); 
-      overflow-x: hidden; 
       min-height: 100vh; 
       font-size: 0.95rem;
     }
 
-    .hero-blur { position: absolute; border-radius: 999px; filter: blur(120px); opacity: 0.6; pointer-events: none; z-index: 0; }
+    /* เปลี่ยน position จาก absolute เป็น fixed เพื่อไม่ให้กินพื้นที่ขอบจอ */
+    .hero-blur { position: fixed; border-radius: 999px; filter: blur(120px); opacity: 0.6; pointer-events: none; z-index: 0; }
     .blur-a { width: 500px; height: 500px; background: #93c5fd; top: -100px; left: -100px; }
     .blur-b { width: 500px; height: 500px; background: #fed7aa; right: -100px; bottom: -100px; }
     
@@ -166,7 +172,7 @@
           <i class="fi fi-sr-marker text-orange-500 text-sm"></i>
           <div class="text-slate-400 text-[10px] font-black uppercase tracking-widest">Location</div>
         </div>
-        <div class="font-bold text-slate-800 text-[0.9rem] leading-snug">อาคารวิจัยและการเรียนรู้ เฉลิมพระเกียรติ 60 พรรษา เจ้าฟ้าจุฬาภรณ์</div>
+        <div class="font-bold text-slate-800 text-[0.9rem] leading-snug break-words">อาคารวิจัยและการเรียนรู้ เฉลิมพระเกียรติ 60 พรรษา เจ้าฟ้าจุฬาภรณ์</div>
       </div>
     </div>
   </div>
@@ -309,8 +315,8 @@
             <div class="absolute w-4 h-4 bg-orange-500 rounded-full -left-[9px] top-1 ring-4 ring-white shadow-sm"></div>
             <div class="text-[13px] font-black text-orange-500 mb-1 tracking-widest">09.50 - 10.05 น.</div>
             <div class="text-[15px] text-slate-700 font-bold leading-relaxed">
-              แขกรับเชิญพิเศษผู้ที่เป็นแรงบันดาลใจ เปิดมุมมองวิชาชีพวิศวกรชีวการแพทย์
-              <div class="text-orange-600 font-bold mt-1 text-[14px]">หัวข้อ: "เมื่อความชอบวิศวะอยากปะทะความสนใจด้านสุขภาพ: วิศวกรรมชีวการแพทย์ทำงานอะไรได้บ้าง?"</div>
+              แขกรับเชิญพิเศษผู้ที่เป็นแรงบันดาลใจ นำเสนอแชร์มุมมอง
+              <div class="text-orange-600 font-bold mt-1 text-[14px]">หัวข้อ: "เปลี่ยนความชอบวิศวะ ให้เป็นนวัตกรรมช่วยชีวิตคนได้จริง"</div>
             </div>
           </li>
           
@@ -387,8 +393,8 @@
 </div>
 
 <script>
-  // API URL 40 ที่นั่ง
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzMpDknYK1gG5ehnBGUdBJjpO3JgYg3i2tdOVpCS86mDDZQHoa4-8Eb-tqbJx9juqhq/exec";
+  // นำ URL ใหม่มาวางตรงนี้
+  const SCRIPT_URL = "https://script.google.com/macros/s/ใส่_URL_ใหม่ของคุณที่นี่/exec";
   const MAX_SEATS = 40; 
 
   window.onload = function() {
