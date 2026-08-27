@@ -38,23 +38,7 @@
     <p class="text-slate-500 font-medium mb-8">กรอกชื่อ-นามสกุล เพื่อดาวน์โหลดเกียรติบัตรของท่าน</p>
 
     <div id="searchForm" class="space-y-4 text-left">
-        <div class="grid grid-cols-12 gap-3">
-            <div class="col-span-4 relative">
-                <div class="c-select-container" id="c-prefix">
-                    <div class="c-select-trigger" id="prefixTrigger"><span>คำนำหน้า</span> <i class="fi fi-sr-angle-small-down"></i></div>
-                    <div class="c-select-dropdown">
-                      <div class="c-select-option" data-value="นาย">นาย</div>
-                      <div class="c-select-option" data-value="นางสาว">นางสาว</div>
-                      <div class="c-select-option" data-value="เด็กชาย">เด็กชาย</div>
-                      <div class="c-select-option" data-value="เด็กหญิง">เด็กหญิง</div>
-                    </div>
-                </div>
-                <input type="hidden" id="prefix">
-            </div>
-            <div class="col-span-8">
-                <input type="text" id="fname" class="input-field" placeholder="ชื่อจริง">
-            </div>
-        </div>
+        <input type="text" id="fname" class="input-field" placeholder="ชื่อจริง">
         <input type="text" id="lname" class="input-field" placeholder="นามสกุล">
         
         <button id="btnSearch" onclick="searchCert()" class="w-full btn-primary py-4 rounded-2xl font-black text-lg mt-4 flex justify-center items-center gap-2">
@@ -80,30 +64,13 @@
     // ⚠️ เปลี่ยน URL ด้านล่างเป็นของคุณหลังจาก Deploy ใหม่
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzMpDknYK1gG5ehnBGUdBJjpO3JgYg3i2tdOVpCS86mDDZQHoa4-8Eb-tqbJx9juqhq/exec";
 
-    // Setup Select
-    document.querySelectorAll('.c-select-container').forEach(container => {
-        const trigger = container.querySelector('.c-select-trigger');
-        const opts = container.querySelectorAll('.c-select-option');
-        const hiddenInput = document.getElementById(container.id.replace('c-', ''));
-        trigger.addEventListener('click', (e) => { e.stopPropagation(); container.classList.toggle('open'); });
-        opts.forEach(opt => {
-            opt.addEventListener('click', (e) => {
-                e.stopPropagation(); hiddenInput.value = opt.getAttribute('data-value');
-                trigger.querySelector('span').innerText = opt.innerText; trigger.style.color = '#0f172a';
-                container.classList.remove('open');
-            });
-        });
-    });
-    document.addEventListener('click', () => document.querySelectorAll('.c-select-container').forEach(c => c.classList.remove('open')));
-
     function searchCert() {
-        const prefix = document.getElementById('prefix').value;
         const fname = document.getElementById('fname').value.trim();
         const lname = document.getElementById('lname').value.trim();
 
-        if(!prefix || !fname || !lname) return Swal.fire({icon:'warning', title:'เตือน', text:'กรุณากรอกข้อมูลให้ครบ'});
+        if(!fname || !lname) return Swal.fire({icon:'warning', title:'เตือน', text:'กรุณากรอกชื่อและนามสกุลให้ครบถ้วน'});
 
-        const fullName = prefix + fname + " " + lname;
+        const fullName = fname + " " + lname;
         const btn = document.getElementById('btnSearch');
         btn.disabled = true; btn.innerHTML = '<i class="fi fi-sr-spinner animate-spin"></i> กำลังค้นหา...';
 
@@ -116,17 +83,29 @@
                 document.getElementById('resultArea').classList.remove('hidden');
                 document.getElementById('downloadLink').href = data.downloadUrl;
             } else {
-                Swal.fire({icon:'error', title:'ไม่พบข้อมูล', text:'ไม่พบเกียรติบัตรที่ตรงกับชื่อนี้ โปรดตรวจสอบตัวสะกดอีกครั้ง'});
+                Swal.fire({
+                    icon:'error', 
+                    title:'ไม่พบข้อมูล', 
+                    text:'ไม่พบเกียรติบัตรที่ตรงกับชื่อนี้ โปรดตรวจสอบตัวสะกดอีกครั้ง',
+                    customClass: { popup: 'modern-popup', confirmButton: 'modern-btn-confirm' }
+                });
             }
         }).catch(err => {
             btn.disabled = false; btn.innerHTML = 'ค้นหาเกียรติบัตร <i class="fi fi-sr-search"></i>';
-            Swal.fire({icon:'error', title:'ข้อผิดพลาด', text:'ไม่สามารถเชื่อมต่อระบบได้'});
+            Swal.fire({
+                icon:'error', 
+                title:'ข้อผิดพลาด', 
+                text:'ไม่สามารถเชื่อมต่อระบบได้',
+                customClass: { popup: 'modern-popup', confirmButton: 'modern-btn-confirm' }
+            });
         });
     }
 
     function resetSearch() {
         document.getElementById('searchForm').classList.remove('hidden');
         document.getElementById('resultArea').classList.add('hidden');
+        document.getElementById('fname').value = "";
+        document.getElementById('lname').value = "";
     }
   </script>
 </body>
