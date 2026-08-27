@@ -249,7 +249,8 @@
                     </a>
                 </div>
 
-                <div class="text-center mt-10 flex flex-col items-center gap-4">
+                <!-- เพิ่ม id ให้กับ div ที่ครอบลิงก์ค้นหาเกียรติบัตร -->
+                <div id="certSearchLinkContainer" class="text-center mt-10 flex flex-col items-center gap-4">
                     <a href="certificate.html" class="inline-flex items-center gap-2 text-blue-600 font-bold hover:text-blue-800 underline transition-colors text-lg">
                         <i class="fi fi-sr-search"></i> ตรวจสอบค้นหาเกียรติบัตรของฉัน
                     </a>
@@ -463,6 +464,15 @@
          window.scrollTo({ top: 0, behavior: 'smooth' });
          
          const certArea = document.getElementById('certArea');
+         const certSearchContainer = document.getElementById('certSearchLinkContainer');
+
+         // เช็คว่าถ้าไม่ใช่ "นักเรียน" ให้ซ่อนลิงก์ค้นหาเกียรติบัตรไปเลย
+         if (payload.userType !== 'นักเรียน') {
+             certSearchContainer.style.display = 'none';
+         } else {
+             certSearchContainer.style.display = 'flex';
+         }
+
          if(data.certFound) {
              certArea.classList.remove('hidden');
              document.getElementById('certImage').src = data.certUrl.replace('view?usp=drivesdk', 'preview');
