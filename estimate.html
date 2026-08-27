@@ -14,14 +14,12 @@
     :root { --text: #0f172a; --primary: #1d4ed8; --orange: #f97316; }
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     
-    /* แก้ปัญหา Scrollbar ซ้อนทับบนมือถือ */
     body { 
       margin: 0; font-family: 'Noto Sans Thai', sans-serif; 
       background: #f1f5f9; color: var(--text);
       background-image: radial-gradient(at 0% 0%, hsla(217,100%,94%,0.8) 0, transparent 40%), radial-gradient(at 100% 100%, hsla(28,100%,94%,0.8) 0, transparent 40%);
     }
     
-    /* ให้ main-card ไหลตามความสูงหน้าจอ */
     .main-card { 
         width: 100%; max-width: 1100px; background: #ffffff; 
         border: 1px solid rgba(255, 255, 255, 0.9); 
@@ -50,7 +48,6 @@
       background: #ffffff; border-color: #3b82f6; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); 
     }
     
-    /* Custom Select */
     .c-select-container { position: relative; width: 100%; user-select: none; }
     .c-select-trigger { display: flex; justify-content: space-between; align-items: center; cursor: pointer; color: #94a3b8; }
     .c-select-trigger.has-value { color: #0f172a; font-weight: 700; }
@@ -71,7 +68,6 @@
     .custom-checkbox input:checked::after { content: '\2714'; position: absolute; margin-left: 4px; color: white; font-weight: bold; }
     .custom-checkbox span { font-weight: 600; font-size: 0.95rem; }
 
-    /* Rating UI */
     .rating-group { background: white; padding: 1.5rem; border-radius: 1.25rem; border: 1px solid #e2e8f0; margin-bottom: 1rem; }
     .rating-question { font-weight: 700; color: #1e293b; margin-bottom: 1rem; font-size: 0.95rem; line-height: 1.5; }
     .rating-options { display: flex; justify-content: space-between; gap: 0.5rem; }
@@ -110,7 +106,7 @@
         </div>
     </div>
 
-    <!-- Right Panel (Form) - เอา height limit ออกเพื่อให้ scroll ลงไปได้เรื่อยๆ -->
+    <!-- Right Panel (Form) - ลบ height limit ออกเพื่อป้องกัน double scrollbar -->
     <div class="lg:w-8/12 flex flex-col relative items-center bg-white p-6 py-10 md:p-10 w-full h-full">
         <div class="w-full max-w-[650px]">
             
@@ -129,6 +125,8 @@
                           <div class="c-select-dropdown">
                             <div class="c-select-option" data-value="นาย">นาย</div>
                             <div class="c-select-option" data-value="นางสาว">นางสาว</div>
+                            <div class="c-select-option" data-value="เด็กชาย">เด็กชาย</div>
+                            <div class="c-select-option" data-value="เด็กหญิง">เด็กหญิง</div>
                           </div>
                       </div>
                       <input type="hidden" id="prefix">
@@ -146,13 +144,20 @@
                   <div class="input-wrapper">
                     <label class="input-label">อีเมล<span class="req">*</span></label>
                     <input type="email" id="email" class="input-field" placeholder="example@gmail.com" oninput="this.value = this.value.replace(/[^a-zA-Z0-9@._-]/g, ''); suggestEmail(this.value)">
-                    <div id="emailSuggest" class="hidden mt-1 bg-white border border-slate-200 rounded-lg shadow-lg absolute w-full z-10"></div>
+                    <div id="emailSuggest" class="hidden mt-1 bg-white border border-slate-200 rounded-lg shadow-lg absolute w-full z-10 overflow-hidden"></div>
                   </div>
 
+                  <!-- หน่วยงาน (เฉพาะนักข่าว) -->
+                  <div id="agencyWrap" class="input-wrapper hidden mt-8">
+                    <label class="input-label text-blue-600 flex items-center gap-2"><i class="fi fi-sr-building text-lg"></i> หน่วยงานของผู้สื่อข่าว<span class="req">*</span></label>
+                    <input type="text" id="agency" class="input-field border-blue-200 bg-blue-50/50" placeholder="ระบุสำนักข่าว หรือ หน่วยงานของท่าน">
+                  </div>
+
+                  <!-- รอบรับสมัคร (เฉพาะนักเรียน) -->
                   <div id="studentRoundWrap" class="input-wrapper hidden mt-8">
                     <label class="input-label text-blue-600 flex items-center gap-2"><i class="fi fi-sr-graduation-cap text-lg"></i> รอบการรับสมัครที่ท่านสนใจ (เฉพาะนักเรียน)<span class="req">*</span></label>
                     <div class="c-select-container" id="c-round">
-                        <div class="c-select-trigger"><span>-- เลือกรอบ --</span> <i class="fi fi-sr-angle-small-down"></i></div>
+                        <div class="c-select-trigger border-blue-200 bg-blue-50/50"><span>-- เลือกรอบ --</span> <i class="fi fi-sr-angle-small-down"></i></div>
                         <div class="c-select-dropdown">
                           <div class="c-select-option" data-value="รอบที่ 1: Portfolio">รอบที่ 1: Portfolio</div>
                           <div class="c-select-option" data-value="รอบที่ 2: Quota">รอบที่ 2: Quota</div>
@@ -165,7 +170,7 @@
                   </div>
 
                   <div class="input-wrapper mt-8">
-                    <label class="input-label flex items-center gap-2"><i class="fi fi-sr-building text-slate-400 text-lg"></i> ท่านรู้จักราชวิทยาลัยจุฬาภรณ์มาก่อนหรือไม่<span class="req">*</span></label>
+                    <label class="input-label flex items-center gap-2"><i class="fi fi-sr-search-alt text-slate-400 text-lg"></i> ท่านรู้จักราชวิทยาลัยจุฬาภรณ์มาก่อนหรือไม่<span class="req">*</span></label>
                     <div class="flex gap-4 mt-3">
                         <label class="custom-checkbox flex-1"><input type="radio" name="knowBefore" value="รู้จัก"><span>รู้จัก</span></label>
                         <label class="custom-checkbox flex-1"><input type="radio" name="knowBefore" value="ไม่รู้จัก"><span>ไม่รู้จัก</span></label>
@@ -190,15 +195,18 @@
                   <div id="ratingContainer"></div>
 
                   <h2 class="text-2xl font-black text-slate-900 mt-10 mb-4 flex items-center gap-3"><i class="fi fi-sr-comment-question text-blue-500"></i> ส่วนที่ 3: คำถามทั่วไป</h2>
-                  <div class="input-wrapper mt-6">
+                  
+                  <!-- ห่อ Q17 และ Q18 ด้วย id เพื่อซ่อนในกรณีเป็นผู้สื่อข่าว -->
+                  <div id="q17Wrap" class="input-wrapper mt-6 hidden">
                     <label class="input-label flex items-start gap-2"><i class="fi fi-sr-calendar-clock text-slate-400 mt-1 text-lg"></i> <div>หากราชวิทยาลัยจุฬาภรณ์จัดกิจกรรม CRA Education Press Tour เปิดบ้านเยี่ยมชม ราชวิทยาลัยจุฬาภรณ์ อีกในปีถัดไป ท่านสนใจเข้าร่วมไหม<span class="req">*</span></div></label>
                     <div class="flex gap-4 mt-3">
                         <label class="custom-checkbox flex-1"><input type="radio" name="q17" value="สนใจ"><span>สนใจ</span></label>
                         <label class="custom-checkbox flex-1"><input type="radio" name="q17" value="ไม่สนใจ"><span>ไม่สนใจ</span></label>
                     </div>
                   </div>
-                  <div class="input-wrapper mt-6">
-                    <label class="input-label flex items-start gap-2"><i class="fi fi-sr-calendar-star text-slate-400 mt-1 text-lg"></i> <div>ราชวิทยาลัยจุฬาภรณ์จะจัดกิจกรรมแนะแนวการศึกษา CRA Open House 2027 ในวันเสาร์ที่ 10 ตุลาคม 2569 ท่านสนใจเข้าร่วมหรือไม่<span class="req">*</span></div></label>
+                  
+                  <div id="q18Wrap" class="input-wrapper mt-6 hidden">
+                    <label class="input-label flex items-start gap-2"><i class="fi fi-sr-calendar-star text-slate-400 mt-1 text-lg"></i> <div>ราชวิทยาลัยจุฬาภรณ์จะจัดกิจกรรมแนะแนวการศึกษา CRA Open House 2026 ในวันเสาร์ที่ 10 ตุลาคม 2569 ท่านสนใจเข้าร่วมหรือไม่<span class="req">*</span></div></label>
                     <div class="flex gap-4 mt-3">
                         <label class="custom-checkbox flex-1"><input type="radio" name="q18" value="สนใจ"><span>สนใจ</span></label>
                         <label class="custom-checkbox flex-1"><input type="radio" name="q18" value="ไม่สนใจ"><span>ไม่สนใจ</span></label>
@@ -227,13 +235,12 @@
                     <p class="text-slate-500 mb-8 font-medium">ความคิดเห็นของท่านเป็นประโยชน์อย่างยิ่งในการพัฒนา</p>
                 </div>
                 
-                <div id="certArea" class="hidden w-full bg-white border border-slate-100 p-6 md:p-8 rounded-[2rem] shadow-lg mt-6">
+                <div id="certArea" class="hidden w-full bg-white border border-slate-100 p-6 md:p-8 rounded-[2rem] shadow-lg mt-6 text-center">
                     <h3 class="text-xl font-black text-slate-800 mb-6 flex items-center justify-center gap-2">
                         <i class="fi fi-sr-diploma text-blue-500 text-2xl"></i> เกียรติบัตรของคุณ
                     </h3>
                     
                     <div id="certImageContainer" class="w-full bg-slate-50 rounded-2xl mb-6 overflow-hidden border border-slate-200 aspect-[1.414/1] relative">
-                         <!-- ถ้าเจอรูป จะใช้ iframe โชว์ Google Drive Preview -->
                          <iframe id="certImage" src="" class="absolute top-0 left-0 w-full h-full border-0" loading="lazy"></iframe>
                     </div>
 
@@ -242,8 +249,10 @@
                     </a>
                 </div>
 
-                <div class="text-center mt-10">
-                    <button onclick="location.reload()" class="text-slate-500 font-bold hover:text-slate-800 underline transition-colors">กลับหน้าเริ่มต้น</button>
+                <div class="text-center mt-10 flex flex-col items-center gap-4">
+                    <a href="certificate.html" class="inline-flex items-center gap-2 text-blue-600 font-bold hover:text-blue-800 underline transition-colors text-lg">
+                        <i class="fi fi-sr-search"></i> ตรวจสอบค้นหาเกียรติบัตรของฉัน
+                    </a>
                 </div>
             </div>
 
@@ -252,7 +261,7 @@
   </div>
 
   <script>
-    // ⚠️ เปลี่ยน URL ด้านล่างเป็นของ Google Apps Script ที่ Deploy ใหม่!
+    // ⚠️ นำ URL จาก Google Apps Script ล่าสุด (ที่ Deploy ใหม่แล้ว) มาใส่แทนที่นี่
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzMpDknYK1gG5ehnBGUdBJjpO3JgYg3i2tdOVpCS86mDDZQHoa4-8Eb-tqbJx9juqhq/exec";
     
     const domains = ['@gmail.com', '@cra.ac.th', '@hotmail.com', '@yahoo.com'];
@@ -300,14 +309,25 @@
         document.getElementById('displayUserType').innerText = type;
         document.getElementById('userTypeBadge').classList.replace('hidden', 'flex');
         
-        if(type === 'นักเรียน') document.getElementById('studentRoundWrap').classList.remove('hidden');
+        // ซ่อน/แสดง ฟิลด์ตามประเภท
+        if(type === 'นักเรียน') {
+            document.getElementById('studentRoundWrap').classList.remove('hidden');
+            document.getElementById('q17Wrap').classList.remove('hidden');
+            document.getElementById('q18Wrap').classList.remove('hidden');
+            document.getElementById('agencyWrap').classList.add('hidden');
+        } else {
+            document.getElementById('studentRoundWrap').classList.add('hidden');
+            document.getElementById('q17Wrap').classList.add('hidden');
+            document.getElementById('q18Wrap').classList.add('hidden');
+            document.getElementById('agencyWrap').classList.remove('hidden'); // แสดงช่องหน่วยงาน
+        }
       });
 
       const srcDiv = document.getElementById('sourceContainer');
       sourcesList.forEach(s => { srcDiv.innerHTML += `<label class="custom-checkbox"><input type="checkbox" name="source" value="${s}"><span>${s}</span></label>`; });
       srcDiv.innerHTML += `
         <label class="custom-checkbox"><input type="checkbox" id="otherSrcCheck"><span>อื่นๆ</span></label>
-        <input type="text" id="otherSrcText" class="input-field hidden mt-2" placeholder="โปรดระบุ...">`;
+        <input type="text" id="otherSrcText" class="input-field hidden mt-2 border-slate-300" placeholder="โปรดระบุ...">`;
       
       document.getElementById('otherSrcCheck').addEventListener('change', function() {
          document.getElementById('otherSrcText').classList.toggle('hidden', !this.checked);
@@ -334,7 +354,7 @@
           rateDiv.innerHTML += `
             <div class="rating-group">
                 <div class="rating-question flex items-start gap-2">
-                    <i class="fi ${q.icon} text-blue-500 mt-1 text-lg shrink-0"></i>
+                    <i class="fi ${q.icon} text-slate-400 mt-1 text-lg shrink-0"></i>
                     <div>${q.text} <span class="req">*</span></div>
                 </div>
                 <div class="rating-options">
@@ -359,15 +379,22 @@
     function nextStep(step) {
       if(step === 2) {
         if(!document.getElementById('prefix').value || !document.getElementById('fname').value || !document.getElementById('lname').value || !document.getElementById('email').value) {
-            return Swal.fire({icon:'warning', title:'ข้อมูลไม่ครบ', text:'กรุณากรอกชื่อและอีเมลให้ครบถ้วน'});
+            return Swal.fire({icon:'warning', title:'ข้อมูลไม่ครบ', text:'กรุณากรอกชื่อและอีเมลให้ครบถ้วน', customClass:{popup:'modern-popup', confirmButton:'modern-btn-confirm'}});
         }
-        if(document.getElementById('userType').value === 'นักเรียน' && !document.getElementById('round').value) {
-            return Swal.fire({icon:'warning', title:'ข้อมูลไม่ครบ', text:'กรุณาระบุรอบรับสมัครที่สนใจ'});
+        
+        const userType = document.getElementById('userType').value;
+        if(userType === 'นักเรียน' && !document.getElementById('round').value) {
+            return Swal.fire({icon:'warning', title:'ข้อมูลไม่ครบ', text:'กรุณาระบุรอบรับสมัครที่สนใจ', customClass:{popup:'modern-popup', confirmButton:'modern-btn-confirm'}});
         }
-        if(!document.querySelector('input[name="knowBefore"]:checked')) return Swal.fire({icon:'warning', title:'ข้อมูลไม่ครบ', text:'กรุณาเลือกว่าท่านรู้จักองค์กรหรือไม่'});
+        // บังคับกรอกช่องหน่วยงานสำหรับสื่อมวลชน
+        if(userType === 'สื่อมวลชน / บุคคลทั่วไป' && !document.getElementById('agency').value.trim()) {
+            return Swal.fire({icon:'warning', title:'ข้อมูลไม่ครบ', text:'กรุณาระบุหน่วยงาน หรือสำนักข่าวของท่าน', customClass:{popup:'modern-popup', confirmButton:'modern-btn-confirm'}});
+        }
+
+        if(!document.querySelector('input[name="knowBefore"]:checked')) return Swal.fire({icon:'warning', title:'ข้อมูลไม่ครบ', text:'กรุณาเลือกว่าท่านรู้จักองค์กรหรือไม่', customClass:{popup:'modern-popup', confirmButton:'modern-btn-confirm'}});
         
         let srcs = document.querySelectorAll('input[name="source"]:checked');
-        if(srcs.length === 0 && !document.getElementById('otherSrcCheck').checked) return Swal.fire({icon:'warning', title:'ข้อมูลไม่ครบ', text:'กรุณาเลือกช่องทางที่รู้จักองค์กร'});
+        if(srcs.length === 0 && !document.getElementById('otherSrcCheck').checked) return Swal.fire({icon:'warning', title:'ข้อมูลไม่ครบ', text:'กรุณาเลือกช่องทางที่รู้จักองค์กร', customClass:{popup:'modern-popup', confirmButton:'modern-btn-confirm'}});
       }
       
       document.querySelectorAll('.step-section').forEach(s => s.classList.remove('visible'));
@@ -384,12 +411,15 @@
     function submitForm() {
       for(let i=0; i<questions.length; i++) {
           if(!document.querySelector(`input[name="${questions[i].id}"]:checked`)) {
-              return Swal.fire({icon:'warning', title:'ให้คะแนนไม่ครบ', text:`กรุณาให้คะแนนความพึงพอใจให้ครบทุกข้อ`});
+              return Swal.fire({icon:'warning', title:'ให้คะแนนไม่ครบ', text:`กรุณาให้คะแนนความพึงพอใจให้ครบทุกข้อ`, customClass:{popup:'modern-popup', confirmButton:'modern-btn-confirm'}});
           }
       }
       
-      if(!document.querySelector('input[name="q17"]:checked')) return Swal.fire({icon:'warning', title:'ข้อมูลไม่ครบ', text:'กรุณาตอบคำถามความสนใจกิจกรรมในปีถัดไป'});
-      if(!document.querySelector('input[name="q18"]:checked')) return Swal.fire({icon:'warning', title:'ข้อมูลไม่ครบ', text:'กรุณาตอบคำถามว่าสนใจเข้าร่วมกิจกรรม Open House 2027 หรือไม่'});
+      const userType = document.getElementById('userType').value;
+      if(userType === 'นักเรียน') {
+          if(!document.querySelector('input[name="q17"]:checked')) return Swal.fire({icon:'warning', title:'ข้อมูลไม่ครบ', text:'กรุณาตอบคำถามความสนใจกิจกรรมในปีถัดไป', customClass:{popup:'modern-popup', confirmButton:'modern-btn-confirm'}});
+          if(!document.querySelector('input[name="q18"]:checked')) return Swal.fire({icon:'warning', title:'ข้อมูลไม่ครบ', text:'กรุณาตอบคำถามว่าสนใจเข้าร่วมกิจกรรม Open House 2026 หรือไม่', customClass:{popup:'modern-popup', confirmButton:'modern-btn-confirm'}});
+      }
 
       const btn = document.getElementById('submitBtn');
       btn.disabled = true; btn.innerHTML = '<i class="fi fi-sr-spinner animate-spin mt-1 text-lg"></i> กำลังประมวลผล...';
@@ -400,11 +430,12 @@
 
       const payload = {
         formType: 'estimate',
-        userType: document.getElementById('userType').value,
+        userType: userType,
         prefix: document.getElementById('prefix').value,
         fname: document.getElementById('fname').value.trim(),
         lname: document.getElementById('lname').value.trim(),
         email: document.getElementById('email').value.trim(),
+        agency: document.getElementById('agency').value.trim(), 
         interestedRound: document.getElementById('round').value,
         knowBefore: document.querySelector('input[name="knowBefore"]:checked').value,
         sources: srcs.join(", "),
@@ -420,8 +451,8 @@
         q15: document.querySelector('input[name="q15"]:checked').value,
         q16: document.querySelector('input[name="q16"]:checked').value,
         q19: document.querySelector('input[name="q19"]:checked').value,
-        q17: document.querySelector('input[name="q17"]:checked').value,
-        q18: document.querySelector('input[name="q18"]:checked').value
+        q17: document.querySelector('input[name="q17"]:checked') ? document.querySelector('input[name="q17"]:checked').value : "-",
+        q18: document.querySelector('input[name="q18"]:checked') ? document.querySelector('input[name="q18"]:checked').value : "-"
       };
 
       fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) })
@@ -434,7 +465,6 @@
          const certArea = document.getElementById('certArea');
          if(data.certFound) {
              certArea.classList.remove('hidden');
-             // เปลี่ยน View ธรรมดา เป็น Preview ใน iframe
              document.getElementById('certImage').src = data.certUrl.replace('view?usp=drivesdk', 'preview');
              document.getElementById('btnDownloadCert').href = data.downloadUrl;
          } else if (payload.userType === 'นักเรียน') {
@@ -445,7 +475,7 @@
          }
       })
       .catch(err => {
-         Swal.fire({icon:'error', title:'เกิดข้อผิดพลาด', text:'โปรดลองใหม่อีกครั้ง ระบบอาจมีการเชื่อมต่อที่ขัดข้อง', customClass:{popup:'modern-popup'}});
+         Swal.fire({icon:'error', title:'เกิดข้อผิดพลาด', text:'โปรดลองใหม่อีกครั้ง ระบบอาจมีการเชื่อมต่อที่ขัดข้อง', customClass:{popup:'modern-popup', confirmButton:'modern-btn-confirm'}});
          btn.disabled = false; btn.innerHTML = 'ส่งแบบประเมิน <i class="fi fi-sr-paper-plane mt-1"></i>';
          btn.classList.remove('opacity-80');
       });
