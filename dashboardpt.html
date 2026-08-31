@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - CRA Education Press Tour 2026</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-solid-rounded/css/uicons-solid-rounded.css'>
+  
+  <script>
+    tailwind.config = {
+      theme: { extend: { fontFamily: { sans: ['"Noto Sans Thai"', 'sans-serif'] } } }
+    }
+  </script>
+  <style>
+    body { font-family: 'Noto Sans Thai', sans-serif; background-color: #f1f5f9; }
+    .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 1.5rem; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); border: 1px solid #f8fafc; }
+    
+    @media print {
+      .no-print { display: none !important; }
+      body { background-color: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .container { max-width: 100% !important; width: 100% !important; padding: 0 !important; margin: 0 !important; }
+      .glass-card { box-shadow: none !important; border: 1px solid #cbd5e1 !important; break-inside: avoid; margin-bottom: 2rem !important; padding: 1rem !important; }
+      .overflow-x-auto, .max-h-[350px] { overflow: visible !important; max-height: none !important; height: auto !important; }
+      table { page-break-inside: auto; width: 100% !important; }
+      tr { page-break-inside: avoid !important; page-break-after: auto; }
+      thead { display: table-header-group; }
+    }
+    
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    .loader { border: 4px solid #f3f3f3; border-top: 4px solid #0891b2; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  </style>
+</head>
+<body class="text-slate-800 antialiased pb-10">
+
+  <div id="loading" class="fixed inset-0 bg-white/95 z-[60] flex flex-col items-center justify-center transition-opacity duration-500">
+    <div class="loader mb-4"></div>
+    <p class="text-blue-700 font-bold animate-pulse text-xl">กำลังประมวลผลข้อมูล Real-time...</p>
+    <p class="text-sm text-slate-400 mt-2">Connecting to Evaluation Database...</p>
+  </div>
+
+  <div id="mainApp" class="container mx-auto px-4 py-8 max-w-[90rem] opacity-0 transition-opacity duration-700 hidden">
+    
+    <!-- Header -->
+    <header class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 border-b border-slate-200 pb-6 no-print">
+      <div class="flex items-center gap-4">
+        <div class="w-14 h-14 bg-blue-100 rounded-2xl flex justify-center items-center text-blue-600 shadow-inner shrink-0">
+            <i class="fi fi-sr-apps text-3xl mt-1"></i>
+        </div>
+        <div>
+            <h1 class="text-2xl md:text-3xl font-black text-[#0a2240] tracking-tight">CRA Education Press Tour 2026</h1>
+            <p class="text-slate-500 font-medium mt-1">Dashboard สรุปผลการประเมินความพึงพอใจ</p>
+        </div>
+      </div>
+      <div class="flex flex-wrap justify-center gap-2">
+        <button onclick="fetchData()" class="flex items-center gap-2 px-5 py-3 bg-white border border-slate-200 text-slate-600 rounded-xl font-bold hover:bg-slate-50 transition shadow-sm">
+          <i class="fi fi-sr-refresh"></i> โหลดข้อมูลใหม่
+        </button>
+        <button onclick="window.print()" class="flex items-center gap-2 px-5 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition shadow-md">
+          <i class="fi fi-sr-print"></i> พิมพ์รายงานสรุป
+        </button>
+      </div>
+    </header>
+
+    <!-- KPI Cards -->
+    <div class="mb-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+       <!-- ผู้ตอบแบบประเมินทั้งหมด -->
+       <div class="bg-gradient-to-br from-[#0a2240] to-blue-700 rounded-3xl p-6 shadow-lg text-white flex items-center justify-between transform hover:-translate-y-1 transition">
+          <div>
+             <p class="text-blue-100 font-bold text-sm mb-1">ผู้ตอบแบบประเมินทั้งหมด</p>
+             <div class="flex items-baseline gap-2"><span class="text-4xl font-black" id="kpiEst">0</span><span class="text-sm font-bold text-blue-200">คน</span></div>
+          </div>
+          <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-blue-200"><i class="fi fi-sr-document-signed mt-1 text-xl"></i></div>
+       </div>
+
+       <!-- กลุ่มนักเรียน -->
+       <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 flex items-center justify-between">
+          <div>
+             <p class="text-indigo-500 font-bold text-sm mb-1">กลุ่มนักเรียน</p>
+             <div class="flex items-baseline gap-2"><span class="text-4xl font-black text-[#0a2240]" id="kpiStudent">0</span><span class="text-sm font-bold text-slate-400">คน</span></div>
+          </div>
+          <div class="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-500"><i class="fi fi-sr-graduation-cap mt-1 text-xl"></i></div>
+       </div>
+
+       <!-- กลุ่มสื่อมวลชน -->
+       <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 flex items-center justify-between">
+          <div>
+             <p class="text-emerald-500 font-bold text-sm mb-1">กลุ่มสื่อมวลชน / ทั่วไป</p>
+             <div class="flex items-baseline gap-2"><span class="text-4xl font-black text-emerald-600" id="kpiOther">0</span><span class="text-sm font-bold text-slate-400">คน</span></div>
+          </div>
+          <div class="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-500"><i class="fi fi-sr-camera mt-1 text-xl"></i></div>
+       </div>
+
+       <!-- คะแนนเฉลี่ย -->
+       <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 flex items-center justify-between">
+          <div>
+             <p class="text-rose-500 font-bold text-sm mb-1">คะแนนภาพรวมกิจกรรม</p>
+             <div class="flex items-baseline gap-2"><span class="text-4xl font-black text-rose-600" id="kpiOverall">0.00</span><span class="text-xl font-bold text-slate-300">/ 5</span></div>
+          </div>
+          <div class="w-12 h-12 rounded-full bg-rose-50 flex items-center justify-center text-rose-500"><i class="fi fi-sr-heart mt-1 text-xl"></i></div>
+       </div>
+    </div>
+
+    <!-- ส่วนที่ 1: ข้อมูลผู้ตอบแบบประเมิน -->
+    <div class="mb-6 text-xl font-bold text-slate-700 px-2 flex items-center gap-2">
+        <i class="fi fi-sr-address-book text-indigo-500 text-2xl"></i> ข้อมูลประชากรศาสตร์ (จากแบบฟอร์มประเมิน)
+    </div>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <!-- ระดับชั้น -->
+        <div class="glass-card p-6 md:p-8">
+            <h3 class="text-lg font-black text-slate-800 mb-6 flex items-center gap-3">
+              <i class="fi fi-sr-book-reader text-indigo-600 text-xl"></i> ระดับชั้นที่กำลังศึกษา
+            </h3>
+            <div class="overflow-x-auto border border-slate-100 rounded-xl">
+                <table class="w-full text-sm text-left border-collapse">
+                    <thead class="bg-indigo-50 text-indigo-800 font-bold uppercase">
+                        <tr><th class="p-3">ระดับชั้น</th><th class="p-3 text-right">จำนวน</th><th class="p-3 text-right">ร้อยละ</th></tr>
+                    </thead>
+                    <tbody id="gradeTableBody" class="divide-y divide-slate-100 bg-white"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- โรงเรียน -->
+        <div class="glass-card p-6 md:p-8 lg:col-span-2">
+            <h3 class="text-lg font-black text-slate-800 mb-6 flex items-center gap-3">
+              <i class="fi fi-sr-school text-indigo-600 text-xl"></i> 10 อันดับโรงเรียนที่เข้าร่วมมากที่สุด
+            </h3>
+            <div class="overflow-x-auto border border-slate-100 rounded-xl max-h-[350px]">
+                <table class="w-full text-sm text-left border-collapse relative">
+                    <thead class="bg-indigo-50 text-indigo-800 font-bold uppercase sticky top-0 z-10 shadow-sm">
+                        <tr><th class="p-3 w-16 text-center">อันดับ</th><th class="p-3">โรงเรียน</th><th class="p-3 text-right w-24">จำนวน</th><th class="p-3 text-right w-24">ร้อยละ</th></tr>
+                    </thead>
+                    <tbody id="schoolTableBody" class="divide-y divide-slate-100 bg-white"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
+        <!-- จังหวัด -->
+        <div class="glass-card p-6 md:p-8">
+            <h3 class="text-lg font-black text-slate-800 mb-6 flex items-center gap-3">
+              <i class="fi fi-sr-map-marker text-indigo-600 text-xl"></i> จังหวัดของโรงเรียน
+            </h3>
+            <div class="overflow-x-auto border border-slate-100 rounded-xl max-h-[300px]">
+                <table class="w-full text-sm text-left border-collapse relative">
+                    <thead class="bg-indigo-50 text-indigo-800 font-bold uppercase sticky top-0 z-10 shadow-sm">
+                        <tr><th class="p-3 w-16 text-center">อันดับ</th><th class="p-3">จังหวัด</th><th class="p-3 text-right w-24">จำนวน</th><th class="p-3 text-right w-24">ร้อยละ</th></tr>
+                    </thead>
+                    <tbody id="provinceTableBody" class="divide-y divide-slate-100 bg-white"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- การรับรู้สื่อ -->
+        <div class="glass-card p-6 md:p-8 flex flex-col gap-6 bg-indigo-50/30">
+            <div>
+                <h3 class="text-lg font-black text-slate-800 mb-4 flex items-center gap-3"><i class="fi fi-sr-megaphone text-indigo-600 text-xl"></i> แหล่งที่ทราบข่าวสาร</h3>
+                <div class="overflow-x-auto border border-slate-100 rounded-xl"><table class="w-full text-sm text-left border-collapse"><thead class="bg-white text-indigo-800 font-bold uppercase border-b border-slate-100"><tr><th class="p-3">แหล่งข่าวสาร</th><th class="p-3 text-right w-24">จำนวน</th><th class="p-3 text-right w-24">ร้อยละ</th></tr></thead><tbody id="regSourceTableBody" class="divide-y divide-slate-100 bg-white"></tbody></table></div>
+            </div>
+            <div class="flex flex-col md:flex-row gap-4">
+                <div class="flex-1">
+                    <h3 class="text-sm font-black text-slate-800 mb-2 flex items-center gap-2"><i class="fi fi-sr-thumbs-up text-indigo-600"></i> ติดตามเพจ EducationCRA หรือไม่</h3>
+                    <div class="overflow-x-auto border border-slate-100 rounded-xl"><table class="w-full text-sm text-left border-collapse"><thead class="bg-white text-indigo-800 font-bold uppercase border-b border-slate-100"><tr><th class="p-2">สถานะ</th><th class="p-2 text-right">จน.</th><th class="p-2 text-right">ร้อยละ</th></tr></thead><tbody id="followTableBody" class="divide-y divide-slate-100 bg-white"></tbody></table></div>
+                </div>
+                <div class="flex-1">
+                    <h3 class="text-sm font-black text-slate-800 mb-2 flex items-center gap-2"><i class="fi fi-sr-browser text-indigo-600"></i> แพลตฟอร์มที่ติดตาม</h3>
+                    <div class="overflow-x-auto border border-slate-100 rounded-xl"><table class="w-full text-sm text-left border-collapse"><thead class="bg-white text-indigo-800 font-bold uppercase border-b border-slate-100"><tr><th class="p-2">แพลตฟอร์ม</th><th class="p-2 text-right">จน.</th><th class="p-2 text-right">ร้อยละ</th></tr></thead><tbody id="platformTableBody" class="divide-y divide-slate-100 bg-white"></tbody></table></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="my-10 border-slate-200">
+
+    <!-- ส่วนที่ 2: ข้อมูลจากแบบประเมิน -->
+    <div class="mb-6 text-xl font-bold text-slate-700 px-2 flex items-center gap-2">
+        <i class="fi fi-sr-star text-amber-500 text-2xl"></i> ข้อมูลเจาะลึก (Evaluation Insights)
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
+       <!-- สัดส่วนเพศ -->
+       <div class="glass-card p-6 md:p-8 lg:col-span-5">
+         <h3 class="text-lg font-black text-slate-800 mb-6 flex items-center gap-2">
+           <i class="fi fi-sr-venus-mars text-blue-500"></i> สัดส่วนเพศผู้เข้าประเมิน
+         </h3>
+         <div class="flex gap-4 mb-6">
+            <div class="flex-1 bg-blue-50 rounded-2xl p-4 text-center border border-blue-100 relative overflow-hidden">
+                <i class="fi fi-sr-mars text-2xl text-blue-500 block mb-1 relative z-10"></i>
+                <div class="text-3xl font-black text-blue-600 relative z-10" id="countMale">0</div>
+                <div class="text-xs font-bold text-slate-500 relative z-10">ชาย</div>
+            </div>
+            <div class="flex-1 bg-pink-50 rounded-2xl p-4 text-center border border-pink-100 relative overflow-hidden">
+                <i class="fi fi-sr-venus text-2xl text-pink-500 block mb-1 relative z-10"></i>
+                <div class="text-3xl font-black text-pink-600 relative z-10" id="countFemale">0</div>
+                <div class="text-xs font-bold text-slate-500 relative z-10">หญิง</div>
+            </div>
+         </div>
+         <div class="overflow-x-auto border border-slate-100 rounded-xl">
+           <table class="w-full text-sm text-left border-collapse">
+             <thead class="bg-slate-50 text-slate-600 font-bold uppercase">
+                 <tr><th class="p-3">เพศ</th><th class="p-3 text-right">จำนวน</th><th class="p-3 text-right">ร้อยละ (%)</th></tr>
+             </thead>
+             <tbody id="genderTableBody" class="divide-y divide-slate-100 bg-white"></tbody>
+           </table>
+         </div>
+         <p class="text-xs text-slate-400 mt-3 font-medium text-center">* ระบบ AI ประมวลผลเพศอัตโนมัติจากคำนำหน้าชื่อ</p>
+       </div>
+
+       <!-- คำถามอื่นๆ -->
+       <div class="lg:col-span-7 flex flex-col gap-6">
+          <div class="glass-card p-6 md:p-8 flex-1">
+              <h3 class="text-lg font-black text-slate-800 mb-6 flex items-center gap-3">
+                <i class="fi fi-sr-bullseye-pointer text-cyan-600 text-xl"></i> รอบรับสมัครที่สนใจ (เฉพาะกลุ่มนักเรียน)
+              </h3>
+              <div class="overflow-x-auto border border-slate-100 rounded-xl">
+                  <table class="w-full text-sm text-left border-collapse">
+                      <thead class="bg-cyan-50 text-cyan-800 font-bold uppercase">
+                          <tr><th class="p-3">รอบรับสมัคร</th><th class="p-3 text-right">จำนวน</th><th class="p-3 text-right">ร้อยละ</th></tr>
+                      </thead>
+                      <tbody id="roundTableBody" class="divide-y divide-slate-100 bg-white"></tbody>
+                  </table>
+              </div>
+          </div>
+          
+          <div class="flex flex-col md:flex-row gap-6 flex-1">
+              <div class="glass-card p-6 flex-1">
+                  <h3 class="text-sm font-black text-slate-800 mb-4 flex items-start gap-2"><i class="fi fi-sr-calendar-clock text-cyan-600 mt-0.5"></i> สนใจร่วม Press Tour ปีหน้าหรือไม่</h3>
+                  <div class="overflow-x-auto border border-slate-100 rounded-xl"><table class="w-full text-sm text-left border-collapse"><thead class="bg-slate-50 text-slate-600 font-bold uppercase"><tr><th class="p-2">ความสนใจ</th><th class="p-2 text-right">จน.</th><th class="p-2 text-right">ร้อยละ</th></tr></thead><tbody id="q17TableBody" class="divide-y divide-slate-100 bg-white"></tbody></table></div>
+              </div>
+              <div class="glass-card p-6 flex-1">
+                  <h3 class="text-sm font-black text-slate-800 mb-4 flex items-start gap-2"><i class="fi fi-sr-calendar-star text-cyan-600 mt-0.5"></i> สนใจร่วม Open House 2026 หรือไม่</h3>
+                  <div class="overflow-x-auto border border-slate-100 rounded-xl"><table class="w-full text-sm text-left border-collapse"><thead class="bg-slate-50 text-slate-600 font-bold uppercase"><tr><th class="p-2">ความสนใจ</th><th class="p-2 text-right">จน.</th><th class="p-2 text-right">ร้อยละ</th></tr></thead><tbody id="q18TableBody" class="divide-y divide-slate-100 bg-white"></tbody></table></div>
+              </div>
+          </div>
+       </div>
+    </div>
+
+    <!-- ความพึงพอใจรายหัวข้อ -->
+    <div class="glass-card p-6 md:p-8 mb-10">
+      <h3 class="text-xl font-black text-slate-800 mb-2 flex items-center gap-3">
+        <i class="fi fi-sr-star text-amber-500 text-2xl"></i> ภาพรวมคะแนนความพึงพอใจรายหัวข้อ
+      </h3>
+      <p class="text-slate-500 font-medium mb-8">คะแนนเฉลี่ยจากผู้ตอบแบบประเมินทั้งหมด (คะแนนเต็ม 5)</p>
+      
+      <div id="satisfactionContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-6"></div>
+    </div>
+
+    <!-- ข้อเสนอแนะ -->
+    <div class="glass-card p-6 md:p-8 mb-8 no-print">
+       <h3 class="text-lg font-black text-slate-800 mb-6 flex items-center gap-3">
+          <i class="fi fi-sr-comment-alt text-blue-500 text-2xl"></i> ข้อเสนอแนะและความรู้สึกจากผู้เข้าร่วม
+       </h3>
+       <div id="suggestionList" class="space-y-3 mb-6"></div>
+       
+       <div class="flex justify-between items-center border-t border-slate-100 pt-4" id="paginationControls">
+          <button id="btnPrev" onclick="changePage(-1)" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg font-bold hover:bg-slate-200 disabled:opacity-50 disabled:cursor-not-allowed transition">ก่อนหน้า</button>
+          <span class="text-sm font-bold text-slate-500">หน้าที่ <span id="lblPageNum" class="text-blue-600">1</span> จาก <span id="lblTotalPages">1</span></span>
+          <button id="btnNext" onclick="changePage(1)" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg font-bold hover:bg-slate-200 disabled:opacity-50 disabled:cursor-not-allowed transition">ถัดไป</button>
+       </div>
+    </div>
+
+  </div>
+
+  <script>
+    // ⚠️ นำ URL จาก Google Apps Script (ที่ Deploy ล่าสุด) มาใส่ที่นี่
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykFgI9EFqWAg4duDg1jnPKRSom7Y0rJw6nxKx1dSPhpB8JRdUjAb9Dld4X9x7RnaLw/exec'; 
+    
+    let EST_DATA = [];
+    let suggestionsArray = [];
+    let currentPage = 1;
+    const itemsPerPage = 8; 
+
+    window.onload = () => fetchData();
+
+    async function fetchData() {
+      document.getElementById('loading').classList.remove('hidden');
+      document.getElementById('loading').classList.remove('opacity-0');
+      document.getElementById('mainApp').classList.add('hidden');
+
+      try {
+        const res = await fetch(SCRIPT_URL + '?action=getDashboardData');
+        const json = await res.json();
+        
+        if(json.status === 'error') throw new Error(json.message);
+        
+        EST_DATA = json.estimateData || []; 
+        
+        processAndRenderData();
+        
+        document.getElementById('loading').classList.add('opacity-0');
+        setTimeout(() => {
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            setTimeout(()=>document.getElementById('mainApp').classList.remove('opacity-0'), 50);
+        }, 500);
+
+      } catch (error) {
+        document.getElementById('loading').innerHTML = `<div class="text-rose-500 font-bold text-center p-6 bg-white rounded-3xl shadow-xl border border-rose-100"><i class="fi fi-sr-triangle-warning text-5xl mb-4 text-rose-400"></i><br>ไม่สามารถดึงข้อมูลได้<br><span class="text-sm text-slate-500 font-normal mt-2 block">${error.message}</span><button onclick="fetchData()" class="mt-4 bg-rose-50 text-rose-600 px-4 py-2 rounded-xl border border-rose-200 hover:bg-rose-100">ลองใหม่</button></div>`;
+      }
+    }
+
+    function preciseRound(number, decimals = 2) {
+      const multiplier = Math.pow(10, decimals);
+      return Math.round(number * multiplier) / multiplier;
+    }
+
+    function countFreq(dataArray, key, isMulti = false) {
+        let counts = {};
+        dataArray.forEach(item => {
+            let val = String(item[key] || "").trim();
+            if (val && val !== "-" && val !== "") {
+                if (isMulti) {
+                   val.split(/,\s*/).forEach(v => {
+                       let cleanV = v.trim();
+                       if(cleanV) counts[cleanV] = (counts[cleanV] || 0) + 1;
+                   });
+                } else {
+                   counts[val] = (counts[val] || 0) + 1;
+                }
+            }
+        });
+        return Object.entries(counts).sort((a,b) => b[1] - a[1]);
+    }
+
+    function processAndRenderData() {
+      const totalEst = EST_DATA.length;
+      let students = 0, others = 0, male = 0, female = 0, otherGender = 0;
+      let sumRatings = {q7:0, q8:0, q9:0, q10:0, q11:0, q12:0, q13:0, q14:0, q15:0, q16:0, q19:0};
+      let validRatings = {q7:0, q8:0, q9:0, q10:0, q11:0, q12:0, q13:0, q14:0, q15:0, q16:0, q19:0};
+      suggestionsArray = [];
+
+      EST_DATA.forEach(d => {
+          if (d.userType === 'นักเรียน') students++;
+          else others++;
+
+          // แยกเพศจากคำนำหน้าชื่อ (AI)
+          let name = String(d.fullName).trim();
+          if (name.match(/^(นาย|เด็กชาย|ด\.ช\.)/)) male++;
+          else if (name.match(/^(นาง|นางสาว|น\.ส\.|เด็กหญิง|ด\.ญ\.)/)) female++;
+          else otherGender++; 
+
+          // รวมคะแนนความพึงพอใจ
+          if(d.ratings) {
+            for (let k in sumRatings) {
+                let v = parseFloat(d.ratings[k]);
+                if (!isNaN(v) && v > 0) {
+                    sumRatings[k] += v;
+                    validRatings[k]++;
+                }
+            }
+          }
+
+          // เก็บข้อเสนอแนะ
+          if (d.suggestion && d.suggestion.trim() !== "" && d.suggestion.trim() !== "-") {
+              suggestionsArray.push(d.suggestion.trim());
+          }
+      });
+
+      // อัปเดต KPI ภาพรวม
+      document.getElementById('kpiEst').innerText = totalEst.toLocaleString();
+      document.getElementById('kpiStudent').innerText = students.toLocaleString();
+      document.getElementById('kpiOther').innerText = others.toLocaleString();
+      
+      let overallAvg = validRatings.q19 > 0 ? (sumRatings.q19 / validRatings.q19).toFixed(2) : "0.00";
+      document.getElementById('kpiOverall').innerText = overallAvg;
+
+      // ข้อมูลประชากรศาสตร์ (ดึงจาก EST_DATA หมดเลย)
+      renderDataTable('gradeTableBody', countFreq(EST_DATA, 'grade'), totalEst);
+      renderRankedTable('schoolTableBody', countFreq(EST_DATA, 'school').slice(0, 10), totalEst);
+      renderRankedTable('provinceTableBody', countFreq(EST_DATA, 'province').slice(0, 10), totalEst);
+      renderDataTable('regSourceTableBody', countFreq(EST_DATA, 'source', true), totalEst);
+      renderDataTable('followTableBody', countFreq(EST_DATA, 'followPage'), totalEst);
+      renderDataTable('platformTableBody', countFreq(EST_DATA, 'platform', true), totalEst);
+
+      // เรนเดอร์เพศ
+      document.getElementById('countMale').innerText = male;
+      document.getElementById('countFemale').innerText = female;
+      let genderData = [['ชาย', male], ['หญิง', female]];
+      if (otherGender > 0) genderData.push(['ไม่ระบุ/อื่นๆ', otherGender]);
+      renderDataTable('genderTableBody', genderData.sort((a,b)=>b[1]-a[1]), totalEst);
+
+      // เรนเดอร์คำถามนักเรียน
+      renderDataTable('roundTableBody', countFreq(EST_DATA, 'interestedRound'), students);
+      renderDataTable('q17TableBody', countFreq(EST_DATA, 'q17'), students);
+      renderDataTable('q18TableBody', countFreq(EST_DATA, 'q18'), students);
+
+      // กราฟแท่งความพึงพอใจ
+      renderSatisfactionBars(sumRatings, validRatings);
+
+      // ข้อเสนอแนะ
+      currentPage = 1;
+      renderSuggestions();
+    }
+
+    function renderDataTable(containerId, data, total) {
+       if(data.length === 0 || total === 0) { document.getElementById(containerId).innerHTML = `<tr><td colspan="3" class="p-6 text-center text-slate-400 font-bold border-b border-slate-50">ไม่มีข้อมูล</td></tr>`; return; }
+       document.getElementById(containerId).innerHTML = data.map((it) => {
+          let p = preciseRound(it[1]*100/total, 2).toFixed(2); 
+          return `<tr class="hover:bg-blue-50 transition-colors border-b border-slate-50"> 
+              <td class="p-2 md:p-3 font-bold text-slate-700">${it[0]}</td> 
+              <td class="p-2 md:p-3 text-right font-black text-blue-600 text-base md:text-lg">${it[1]}</td> 
+              <td class="p-2 md:p-3 text-right text-slate-500 font-bold">${p}%</td> 
+          </tr>`;
+       }).join('');
+    }
+
+    function renderRankedTable(containerId, data, total) {
+      const medals = [
+          '<div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center mx-auto shadow-sm"><i class="fi fi-sr-trophy text-amber-500 mt-1"></i></div>', 
+          '<div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center mx-auto shadow-sm"><i class="fi fi-sr-trophy text-slate-400 mt-1"></i></div>', 
+          '<div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center mx-auto shadow-sm"><i class="fi fi-sr-trophy text-orange-500 mt-1"></i></div>'
+      ];
+      if(data.length === 0 || total === 0) { document.getElementById(containerId).innerHTML = `<tr><td colspan="4" class="p-6 text-center text-slate-400 font-bold border-b border-slate-50">ไม่มีข้อมูล</td></tr>`; return; }
+      document.getElementById(containerId).innerHTML = data.map((it, i) => {
+        let p = preciseRound(it[1]*100/total, 2).toFixed(2); 
+        let icon = i < 3 ? medals[i] : `<span class="font-black text-slate-400">${i+1}</span>`;
+        return `<tr class="hover:bg-blue-50 transition-colors border-b border-slate-50"> 
+            <td class="p-3 text-center align-middle w-16">${icon}</td> 
+            <td class="p-3 font-bold text-slate-700">${it[0]}</td> 
+            <td class="p-3 text-right font-black text-blue-600 text-lg w-24">${it[1]}</td> 
+            <td class="p-3 text-right text-slate-500 font-bold w-24">${p}%</td> 
+        </tr>`;
+      }).join('');
+    }
+
+    function renderSatisfactionBars(sumObj, countObj) {
+      const questionsDef = [
+        { id: "q7", label: "ท่านให้คะแนนความสะดวกในการลงทะเบียนเข้าระดับใด", icon: "fi-sr-laptop" },
+        { id: "q8", label: "ช่วงเวลาในการจัดกิจกรรม ท่านพึงพอใจในระดับใด", icon: "fi-sr-clock" },
+        { id: "q9", label: "ท่านพึงพอใจสถานที่จัดงานระดับใด", icon: "fi-sr-marker" },
+        { id: "q10", label: "หลังจากเข้าร่วมกิจกรรมทำให้ท่านสนใจหลักสูตรมากขึ้นระดับใด", icon: "fi-sr-heart" },
+        { id: "q11", label: "กิจกรรมแนะนำหลักสูตร 'เจาะลึกเบื้องหลังวิศวกรชีวการแพทย์ ผู้ขับเคลื่อนสุขภาพแห่งอนาคต' ท่านพึงพอใจในระดับใด", icon: "fi-sr-presentation" },
+        { id: "q12", label: "กิจกรรมเสวนาพิเศษจากวิทยากร 'เมื่อความชอบวิศวะอยากปะทะความสนใจด้านสุขภาพ: วิศวกรรมชีวการแพทย์ทำงานอะไรได้บ้าง ? ' ท่านพึงพอใจระดับใด", icon: "fi-sr-microphone" },
+        { id: "q13", label: "ฐานกิจกรรมเวิร์คชอปห้องปฏิบัติการของหลักสูตร ฐานที่ 1 Medical Device Testing ท่านพึงพอใจระดับใด", icon: "fi-sr-stethoscope" },
+        { id: "q14", label: "ฐานกิจกรรมเวิร์คชอปห้องปฏิบัติการของหลักสูตร ฐานที่ 2 Brain control Robot arm ท่านพึงพอใจระดับใด", icon: "fi-sr-robot" },
+        { id: "q15", label: "ฐานกิจกรรมเวิร์คชอปห้องปฏิบัติการของหลักสูตร ฐานที่ 3 From design to Manufacturing ท่านพึงพอใจระดับใด", icon: "fi-sr-gears" },
+        { id: "q16", label: "ฐานกิจกรรมเยี่ยมชมห้องสมุด ราชวิทยาลัยจุฬาภรณ์ ท่านพึงพอใจระดับใด", icon: "fi-sr-book-alt" },
+        { id: "q19", label: "ความพึงพอใจภาพรวมของกิจกรรม CRA Education Press Tour 2026: CRA Engineer for Lives 'พลิกโฉมวิศวกรชีวการแพทย์ สู่ความเป็นเลิศเพื่อทุกชีวิต'", icon: "fi-sr-thumbs-up" }
+      ];
+
+      document.getElementById('satisfactionContainer').innerHTML = questionsDef.map(item => {
+        let validC = countObj[item.id] || 0;
+        let sum = sumObj[item.id] || 0;
+        let avg = validC ? (sum/validC).toFixed(2) : "0.00";
+        let pct = (parseFloat(avg)/5)*100;
+        
+        let colorClass = item.id === "q19" ? 'from-rose-400 to-rose-600' : 'from-blue-400 to-indigo-600'; 
+        let iconColor = item.id === "q19" ? 'text-rose-500' : 'text-blue-500';
+
+        return `<div class="bg-white p-5 rounded-2xl border border-slate-100 flex flex-col shadow-sm">
+                  <div class="flex flex-col sm:flex-row justify-between items-start gap-3 mb-4">
+                    <span class="text-sm font-bold text-slate-700 flex items-start gap-2 leading-relaxed flex-1">
+                      <i class="fi ${item.icon} ${iconColor} mt-0.5 flex-shrink-0 text-base"></i> <span>${item.label}</span>
+                    </span>
+                    <div class="flex flex-col items-end flex-shrink-0 bg-slate-50 px-3 py-1 rounded-xl border border-slate-100">
+                      <span class="text-xl md:text-2xl font-black text-[#0a2240]">${avg}<span class="text-xs text-slate-400 font-bold ml-1">/5</span></span>
+                    </div>
+                  </div>
+                  <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden mt-auto">
+                    <div class="bg-gradient-to-r ${colorClass} h-full rounded-full transition-all duration-1000" style="width:${pct}%"></div>
+                  </div>
+                </div>`;
+      }).join('');
+    }
+
+    function renderSuggestions() {
+       const totalPages = Math.ceil(suggestionsArray.length / itemsPerPage) || 1;
+       document.getElementById('lblTotalPages').innerText = totalPages;
+       
+       if (suggestionsArray.length === 0) {
+           document.getElementById('suggestionList').innerHTML = '<div class="p-8 text-center text-slate-400 font-bold border border-dashed border-slate-200 rounded-xl">ไม่มีข้อเสนอแนะเพิ่มเติม</div>';
+           document.getElementById('paginationControls').style.display = 'none';
+           return;
+       }
+
+       document.getElementById('paginationControls').style.display = 'flex';
+       const start = (currentPage - 1) * itemsPerPage;
+       const end = start + itemsPerPage;
+       const currentItems = suggestionsArray.slice(start, end);
+
+       document.getElementById('suggestionList').innerHTML = currentItems.map((text, index) => {
+           let actualIndex = start + index + 1;
+           return `<div class="p-4 bg-white rounded-xl border border-slate-200 flex items-start gap-4 shadow-sm">
+               <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-black flex-shrink-0 text-sm">${actualIndex}</div>
+               <div class="text-slate-600 text-sm leading-relaxed pt-1 font-medium">${text}</div>
+           </div>`;
+       }).join('');
+
+       document.getElementById('lblPageNum').innerText = currentPage;
+       document.getElementById('btnPrev').disabled = currentPage === 1;
+       document.getElementById('btnNext').disabled = currentPage === totalPages;
+    }
+
+    function changePage(direction) {
+       const totalPages = Math.ceil(suggestionsArray.length / itemsPerPage);
+       currentPage += direction;
+       if (currentPage < 1) currentPage = 1;
+       if (currentPage > totalPages) currentPage = totalPages;
+       renderSuggestions();
+    }
+  </script>
+</body>
+</html>
